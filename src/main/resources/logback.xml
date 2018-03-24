@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} %X{username} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <!--Application Log-->
+    <appender name="ref/hawthorne/bot/application" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne/bot/application</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="hawthorne/bot/application" level="INFO">
+        <appender-ref ref="ref/hawthorne/bot/application" />
+    </logger>
+
+    <!--Message Received Log-->
+    <appender name="ref/hawthorne/messages/received" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne/bot/application</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="hawthorne/messages/received" level="INFO">
+        <appender-ref ref="ref/hawthorne/messages/received" />
+    </logger>
+
+    <!--Message Edit Log-->
+    <appender name="ref/hawthorne/messages/edit" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne/bot/application</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="hawthorne/messages/edit" level="INFO">
+        <appender-ref ref="ref/hawthorne/messages/edit" />
+    </logger>
+
+    <!--Message Delete Log-->
+    <appender name="ref/hawthorne/messages/delete" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne/bot/application</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="hawthorne/messages/delete" level="INFO">
+        <appender-ref ref="ref/hawthorne/messages/delete" />
+    </logger>
+
+</configuration>
