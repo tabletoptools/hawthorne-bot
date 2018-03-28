@@ -19,7 +19,6 @@ before_install:
     TRAVIS_TAG="SNAPSHOT";
   fi
 - tar -xzf credentials.tar.gz
-- mv client_secret.json src/main/resources/client_secret.json
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file client-secret.json
 - gcloud components install beta
