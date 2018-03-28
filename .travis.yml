@@ -14,7 +14,10 @@ before_install:
   if [ ! -d $HOME/google-cloud-sdk ]; then
     curl https://sdk.cloud.google.com | bash;
   fi
-- [ -z $TRAVIS_TAG ] && { TRAVIS_TAG="SNAPSHOT" }
+- |
+  if [ -v $TRAVIS_TAG ]; then
+    TRAVIS_TAG="SNAPSHOT";
+  fi
 - tar -xzf credentials.tar.gz
 - mv client_secret.json src/main/resources/client_secret.json
 - mkdir -p lib
@@ -32,6 +35,4 @@ deploy:
     tags: true
     branch: master
 env:
-  - PATH=$PATH:$HOME/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1
-  global:
-    secure: SgjFEqGJgEAR8ORNR5+H/syS85/P/1xhcEMBhC74qV5sY1m0QkDtHpCb5MQNbuam6p28kse5ysjkSo4T8wkrg0Qpps1+u52FVCLXC4RxHR68iybN6vz7FWav3HbxQ5Ugo5oDKHtU5/5U7T6kcrTipH4SwRzrQYzbBPDyz36Amr4/RN0vO4CxyuuaVGTC5YVnECEVyDb8Qf7/hAbLe6yP/Rb4J9zLDzKzNP1hfGBaeLsHPfJPJhZ/bgXWX79EN8D2ZzxXIDXaiNsU7QJS1W1nPj902wo045pOOIzKcYOwKDqcUJJQm8TgyMeJf94aZtJL2cqUuNLMA/+gPbG4g3hiRRzONg9hwjEi3DygoLe3dQkIDL9uCI/DLf01riqlhLyXpRHXL32YERDaOMQOdBe/HeCu3v2Usdxz1oYfF+xdlT9mAV9TjrlhkpKXUm88WdxwMM3cB5t2sy0LLUwxzY8jYKaCKOdQd2znnBacRkKtQC5a/OQvKAohaTqC6XOnmP54IgbZeJrhU7mj0nL+o8lbxBU6cw+OTHGxaZtmaqT4Hqku0h8AosdcJMfeotwlytvRfZ1U9/UJmEoJBBW0fdJnl7LaX6wkVCSeYFiZJT0OzAMr/UeGI3Ar/lUmYLWJs1rLWpsUHPAmyo2S8Q6EgeXdg56hfbKvUprlwQ2l2/IltSY=
+- PATH=$PATH:$HOME/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1
