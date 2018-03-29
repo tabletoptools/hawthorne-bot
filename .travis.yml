@@ -22,7 +22,7 @@ before_install:
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file deploy_secret.json
 before_deploy:
-- docker build -t us.gcr.io/hawthorne-197812/hawthorne-bot:$TRAVIS_TAG .
+- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg TRAVIS_TAG=$TRAVIS_TAG -t us.gcr.io/hawthorne-197812/hawthorne-bot:$TRAVIS_TAG .
 deploy:
   provider: script
   script:
