@@ -16,7 +16,7 @@ before_install:
   fi
 - |
   if [ -v $TRAVIS_TAG ]; then
-    TRAVIS_TAG="SNAPSHOT";
+    TRAVIS_TAG="1.0-SNAPSHOT";
   fi
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
