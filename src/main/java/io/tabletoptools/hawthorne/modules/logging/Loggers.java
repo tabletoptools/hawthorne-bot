@@ -12,7 +12,7 @@
  * it only in accordance with the terms of the license agreement
  * you entered into with bluesky IT-Solutions AG.
  */
-package io.tabletoptools.hawthorne;
+package io.tabletoptools.hawthorne.modules.logging;
 
 import org.slf4j.LoggerFactory;
 

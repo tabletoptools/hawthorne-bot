@@ -3,7 +3,7 @@
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{0} %X{username} - %msg%n</pattern>
+            <pattern>%d{dd.MM.yyyy - HH:mm:ss.SSS, GMT+1:00} %-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
     <root level="INFO">
@@ -44,6 +44,25 @@
     </appender>
     <logger name="hawthorne/messages/delete" level="INFO">
         <appender-ref ref="ref/hawthorne/messages/delete" />
+    </logger>
+
+    <appender name="ref/jda" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne/bot/jda</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="JDA" level="INFO">
+        <appender-ref ref="ref/jda" />
+    </logger>
+    <logger name="WebSocketClient" level="INFO">
+        <appender-ref ref="ref/jda" />
+    </logger>
+
+    <appender name="ref/modulizer" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>modulizer</log>
+        <flushLevel>ERROR</flushLevel>
+    </appender>
+    <logger name="modulizer" level="INFO">
+        <appender-ref ref="ref/modulizer" />
     </logger>
 
 </configuration>

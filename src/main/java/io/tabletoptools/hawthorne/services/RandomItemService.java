@@ -17,7 +17,7 @@ package io.tabletoptools.hawthorne.services;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.model.Category;
 import io.tabletoptools.hawthorne.model.Item;
-import io.tabletoptools.hawthorne.Loggers;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.model.Tier;
 import io.tabletoptools.hawthorne.model.WeightedTierCategoryPair;

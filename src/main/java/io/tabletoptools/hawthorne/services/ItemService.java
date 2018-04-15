@@ -27,12 +27,12 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
-import io.tabletoptools.hawthorne.*;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.model.Category;
 import io.tabletoptools.hawthorne.model.Item;
 import io.tabletoptools.hawthorne.model.Tier;
 import io.tabletoptools.hawthorne.model.WeightedTierCategoryPair;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.io.File;
 import java.io.IOException;

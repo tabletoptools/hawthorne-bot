@@ -1,6 +1,6 @@
 package io.tabletoptools.hawthorne.model;
 
-import io.tabletoptools.hawthorne.Loggers;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 public enum Category {
     Consumable,
