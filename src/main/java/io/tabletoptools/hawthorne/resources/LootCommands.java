@@ -26,6 +26,7 @@ import io.tabletoptools.hawthorne.model.Category;
 import io.tabletoptools.hawthorne.model.Item;
 import io.tabletoptools.hawthorne.model.RollSettings;
 import io.tabletoptools.hawthorne.model.Tier;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.services.ItemService;
 import io.tabletoptools.hawthorne.services.RandomItemService;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
@@ -36,10 +37,12 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class LootCommands {
 
@@ -318,10 +321,23 @@ public class LootCommands {
         try {
             event.getMessage().delete().queue();
 
+            Long uptime = ManagementFactory.getRuntimeMXBean().getUptime();
+
+            String uptimeString = String.format("%02d:%02d:%02d",
+                    TimeUnit.MILLISECONDS.toHours(uptime),
+                    TimeUnit.MILLISECONDS.toMinutes(uptime) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(uptime)), // The change is in this line
+                    TimeUnit.MILLISECONDS.toSeconds(uptime) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(uptime)));
+
             MessageEmbed embed = new EmbedBuilder()
-                    .addField("Ping", String.valueOf(HawthorneBot.instance().getClient().getPing()) + " ms", true)
-                    .addField("Amount of Items", String.valueOf(ItemService.instance().getItemList().size()), true)
-                    .addField("Amount of Level Brackets", String.valueOf(ItemService.instance().getLevelBrackets().size()), true)
+                    .setTitle("Bot Status")
+                    .setDescription("Current metrics of the bot in general")
+                    .addField("Ping", String.valueOf(HawthorneBot.instance().getClient().getPing()) + " ms", false)
+                    .addField("Amount of Items", String.valueOf(ItemService.instance().getItemList().size()), false)
+                    .addField("Amount of Level Brackets", String.valueOf(ItemService.instance().getLevelBrackets().size()), false)
+                    .addField("Pending Loot Rolls", String.valueOf(HawthorneBot.instance().getRollMessages().size()), false)
+                    .addField("Uptime", uptimeString, true)
                     .setFooter(HawthorneBot.instance().FOOTER, HawthorneBot.BOT_OWNER_ICON)
                     .setColor(HawthorneBot.instance().HAWTHORNE_PURPLE)
                     .build();
@@ -332,6 +348,19 @@ public class LootCommands {
             event.getChannel().sendMessage("Not authenticated. Please run the authenticate command.").queue();
         }
 
+    }
+
+    @Command("clear")
+    @Description("Clear all pending loot rolls")
+    @Constraint(value = {BotOwnerConstraint.class, HawthorneAdminConstraint.class, HawthorneHeadOfStaffConstraint.class, HawthorneRulesConstraint.class,
+            TesterConstraint.class}, enforceAll = false)
+    public static void clear(MessageReceivedEvent event) {
+        event.getMessage().delete().queue();
+        HawthorneBot.instance().getRollMessages().forEach((id, settings) -> {
+            settings.getMessage().delete().queue();
+        });
+        HawthorneBot.instance().getRollMessages().clear();
+        event.getMessage().getChannel().sendMessage("Success.").queue();
     }
 
     private static void storeLootRequest(Message message, Integer playerCount, BigDecimal apl, Member author) {

@@ -1,12 +1,18 @@
 package io.tabletoptools.hawthorne;
 
 import ch.hive.discord.bots.commands.CommandBase;
+import io.tabletoptools.discord.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.listener.GuildMemberListener;
 import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
 import io.tabletoptools.hawthorne.listener.MessageListener;
 import io.tabletoptools.hawthorne.listener.ReactionListener;
 import io.tabletoptools.hawthorne.model.RollSettings;
+import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
+import io.tabletoptools.hawthorne.modules.formhooks.FormModule;
+import io.tabletoptools.hawthorne.modules.hawthorne.HawthorneModule;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
+import io.tabletoptools.hawthorne.modules.logging.LoggingModule;
 import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
@@ -45,7 +51,8 @@ public class HawthorneBot {
         try {
 
             if (args.length == 0 && !System.getenv().containsKey("BOT_TOKEN")) {
-                Loggers.APPLICATION_LOG.error("No bot token provided (argument or BOT_TOKEN env). Quitting.");
+                Loggers.APPLICATION_LOG.error("No bot token provided (argument or BOT_TOKEN env variable). Quitting.");
+                return;
             }
 
             String token = null;
@@ -124,6 +131,11 @@ public class HawthorneBot {
                 .registerCommandClass(GeneralCommands.class)
                 .registerCommandClass(GuideCommands.class)
                 .registerCommandClass(LootCommands.class);
+
+        Modulizer.instance()
+                .loadModule(new CoffeeModule())
+                .loadModule(new HawthorneModule());
+
         Loggers.APPLICATION_LOG.info("Starting discord client...");
         getClient().addEventListener(new MessageListener());
         getClient().addEventListener(new ReactionListener());

@@ -15,7 +15,7 @@
 package io.tabletoptools.hawthorne.listener;
 
 import ch.hive.discord.bots.commands.CommandBase;
-import io.tabletoptools.hawthorne.Loggers;
+import io.tabletoptools.discord.modulizer.Modulizer;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -28,7 +28,9 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         CommandBase.instance().process(event);
-
+        if(event.getAuthor().getIdLong() == 135468266695950336L) {
+            Modulizer.instance().process(event);
+        }
         //4valon Kitt3n B00T
 
         //Things to check for:
