@@ -34,8 +34,9 @@ public class HawthorneBot {
     private static Thread updateThread;
     private HashMap<Long, RollSettings> rollMessages = new HashMap<>();
     private String token;
+    private String typeformToken;
     public final Color HAWTHORNE_PURPLE = new Color(250, 0, 255);
-    public final String FOOTER = "DEV_BOT";
+    public final String FOOTER = "Hawthorne Bot";
     private static boolean shutdown = false;
     private static boolean isShutdown = false;
     private static boolean restart = false;
@@ -55,6 +56,10 @@ public class HawthorneBot {
                 return;
             }
 
+            if(!System.getenv().containsKey("TYPEFORM_TOKEN")) {
+                Loggers.APPLICATION_LOG.error("No typeform token submitted.");
+            }
+
             String token = null;
 
             if(System.getenv().containsKey("BOT_TOKEN")) {
@@ -65,6 +70,7 @@ public class HawthorneBot {
             }
 
             instance().start(token);
+            instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
             Runtime.getRuntime().addShutdownHook(new Thread() {
 
                 @Override
@@ -126,7 +132,7 @@ public class HawthorneBot {
             Loggers.APPLICATION_LOG.info("Not authenticated. Let's fix that, shall we?");
         }
         Loggers.APPLICATION_LOG.info("Starting command handler");
-        CommandBase.instance().setPrefix("dev!")
+        CommandBase.instance().setPrefix("/h")
                 .setColor(HAWTHORNE_PURPLE)
                 .registerCommandClass(GeneralCommands.class)
                 .registerCommandClass(GuideCommands.class)
@@ -145,6 +151,14 @@ public class HawthorneBot {
         Loggers.APPLICATION_LOG.info("Successfully started discord client.");
         //Discord shutdown hook
 
+    }
+
+    public String getTypeformToken() {
+        return typeformToken;
+    }
+
+    public void setTypeformToken(String typeformToken) {
+        this.typeformToken = typeformToken;
     }
 
     public JDA getClient() {
