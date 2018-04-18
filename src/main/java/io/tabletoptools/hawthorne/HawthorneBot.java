@@ -8,6 +8,7 @@ import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
 import io.tabletoptools.hawthorne.listener.MessageListener;
 import io.tabletoptools.hawthorne.listener.ReactionListener;
 import io.tabletoptools.hawthorne.model.RollSettings;
+import io.tabletoptools.hawthorne.modules.api.APIModule;
 import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
 import io.tabletoptools.hawthorne.modules.formhooks.FormModule;
 import io.tabletoptools.hawthorne.modules.hawthorne.HawthorneModule;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 public class HawthorneBot {
 
     public static final String BOT_OWNER_ICON = "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png";
+    private static final String BOT_PREFIX = "/h";
+    public final String FOOTER = "Hawthorne Bot";
     private static HawthorneBot bot;
     private JDA client;
     private static Thread updateThread;
@@ -36,7 +39,6 @@ public class HawthorneBot {
     private String token;
     private String typeformToken;
     public final Color HAWTHORNE_PURPLE = new Color(250, 0, 255);
-    public final String FOOTER = "Hawthorne Bot";
     private static boolean shutdown = false;
     private static boolean isShutdown = false;
     private static boolean restart = false;
@@ -114,7 +116,7 @@ public class HawthorneBot {
                 }
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            Loggers.APPLICATION_LOG.error("Exception: ", ex);
         } finally {
             performShutdown();
         }
@@ -132,15 +134,15 @@ public class HawthorneBot {
             Loggers.APPLICATION_LOG.info("Not authenticated. Let's fix that, shall we?");
         }
         Loggers.APPLICATION_LOG.info("Starting command handler");
-        CommandBase.instance().setPrefix("/h")
+        CommandBase.instance().setPrefix(BOT_PREFIX)
                 .setColor(HAWTHORNE_PURPLE)
                 .registerCommandClass(GeneralCommands.class)
                 .registerCommandClass(GuideCommands.class)
                 .registerCommandClass(LootCommands.class);
 
-        Modulizer.instance()
-                .loadModule(new CoffeeModule())
-                .loadModule(new HawthorneModule());
+        Modulizer.instance().loadModule(new CoffeeModule());
+        //Modulizer.instance().loadModule(new APIModule());
+        Modulizer.instance().loadModule(new HawthorneModule());
 
         Loggers.APPLICATION_LOG.info("Starting discord client...");
         getClient().addEventListener(new MessageListener());
@@ -185,7 +187,11 @@ public class HawthorneBot {
         });
         instance().getRollMessages().clear();
         Loggers.APPLICATION_LOG.info("Shutting down client.");
+
         instance().getClient().shutdown();
+
+        Modulizer.instance().stop();
+
         isShutdown = true;
         if (restart) {
             System.exit(2);
