@@ -50,7 +50,7 @@ public class LootCommands {
         try {
             apl = new BigDecimal(aplAsString);
         } catch (Exception ex) {
-            event.getChannel().sendMessage("Error: APL is not numeric.");
+            event.getChannel().sendMessage("Error: APL is not numeric.").queue();
             return;
         }
 
