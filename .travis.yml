@@ -20,7 +20,7 @@ before_install:
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file deploy-key.json
 before_deploy:
-- docker build -p 1337:4567 --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION
+- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION
   -t us.gcr.io/hawthorne-197812/hawthorne-bot:$BUILD_VERSION .
 deploy:
   provider: script
