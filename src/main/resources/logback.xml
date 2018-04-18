@@ -21,7 +21,7 @@
 
     <!--Message Received Log-->
     <appender name="ref/hawthorne/messages/received" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/bot/application</log>
+        <log>hawthorne/messages/received</log>
         <flushLevel>ERROR</flushLevel>
     </appender>
     <logger name="hawthorne/messages/received" level="INFO">
@@ -30,7 +30,7 @@
 
     <!--Message Edit Log-->
     <appender name="ref/hawthorne/messages/edit" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/bot/application</log>
+        <log>hawthorne/messages/edit</log>
         <flushLevel>ERROR</flushLevel>
     </appender>
     <logger name="hawthorne/messages/edit" level="INFO">
@@ -39,7 +39,7 @@
 
     <!--Message Delete Log-->
     <appender name="ref/hawthorne/messages/delete" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/bot/application</log>
+        <log>hawthorne/messages/delete</log>
         <flushLevel>ERROR</flushLevel>
     </appender>
     <logger name="hawthorne/messages/delete" level="INFO">
