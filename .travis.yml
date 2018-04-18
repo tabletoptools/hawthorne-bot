@@ -24,7 +24,7 @@ before_deploy:
   -t us.gcr.io/hawthorne-197812/hawthorne-bot:$BUILD_VERSION .
 deploy:
   provider: script
-  script: bash docker_push.sh
+  script: gcloud docker -- push us.gcr.io/hawthorne-197812/hawthorne-bot:${BUILD_VERSION}
   skip_cleanup: true
   on:
     branch: master
