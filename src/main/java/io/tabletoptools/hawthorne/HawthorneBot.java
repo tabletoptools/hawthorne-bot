@@ -35,8 +35,8 @@ import java.util.HashMap;
 public class HawthorneBot {
 
     public static final String BOT_OWNER_ICON = "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png";
-    private static final String BOT_PREFIX = "dev!";
-    public final String FOOTER = "DEV_BOT";
+    private static final String BOT_PREFIX = "/h";
+    public final String FOOTER = "Hawthorne Bot";
     private static HawthorneBot bot;
     private JDA client;
     private HashMap<Long, RollSettings> rollMessages = new HashMap<>();
