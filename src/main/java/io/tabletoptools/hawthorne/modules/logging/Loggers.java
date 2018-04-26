@@ -23,9 +23,4 @@ public class Loggers {
     //Application Logic
     public static final org.slf4j.Logger APPLICATION_LOG = LoggerFactory.getLogger("hawthorne/bot/application");
 
-    //Messages
-    public static final org.slf4j.Logger MESSAGE_RECEIVED_LOG = LoggerFactory.getLogger("hawthorne/messages/received");
-    public static final org.slf4j.Logger MESSAGE_EDIT_LOG = LoggerFactory.getLogger("hawthorne/messages/edit");
-    public static final org.slf4j.Logger MESSAGE_DELETE_LOG = LoggerFactory.getLogger("hawthorne/messages/delete");
-
 }

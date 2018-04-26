@@ -68,12 +68,6 @@ public class FormModule extends Module {
 
     private Date lastCheck = new Date();
     private ScheduledExecutorService scheduledExecutorService;
-    private final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            performCheck();
-        }
-    };
 
     void performCheck() {
         try {
@@ -85,27 +79,30 @@ public class FormModule extends Module {
             if (responses.getInt("total_items") > 0) {
                 Loggers.APPLICATION_LOG.info("Got new Registrations: <{}>", responses.getInt("total_items"));
                 responses.getJSONArray("items").forEach(item -> {
-                    JSONObject response = ((JSONObject) item);
-                    JSONArray answers = response.getJSONArray("answers");
-                    List<Object> answerList = answers.toList();
+                    try {
+                        JSONObject response = ((JSONObject) item);
+                        JSONArray answers = response.getJSONArray("answers");
+                        List<Object> answerList = answers.toList();
 
-                    String name = getAnswerString(answerList, REGISTRATION_FIELD_ID_NAME, "text");
-                    String username = getAnswerString(answerList, REGISTRATION_FIELD_ID_USERNAME, "text");
-                    String email = getAnswerString(answerList, REGISTRATION_FIELD_ID_EMAIL, "email");
-                    String townName = getAnswerString(answerList, REGISTRATION_FIELD_ID_TOWN, "text");
-                    String ruleQuestion = getAnswerString(answerList, REGISTRATION_FIELD_ID_RULE, "text");
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("New Adventurer Registration from " + name)
-                            .setAuthor(username)
-                            .addField("Email", email, false)
-                            .addField("Town Name", townName, true)
-                            .addField("Rule Question", ruleQuestion, true)
-                            .setDescription("Check the Sheet for more information.")
-                            .setColor(new Color(73, 98, 62))
-                            .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
-                            .build();
-                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
-
+                        String name = getAnswerString(answerList, REGISTRATION_FIELD_ID_NAME, "text");
+                        String username = getAnswerString(answerList, REGISTRATION_FIELD_ID_USERNAME, "text");
+                        String email = getAnswerString(answerList, REGISTRATION_FIELD_ID_EMAIL, "email");
+                        String townName = getAnswerString(answerList, REGISTRATION_FIELD_ID_TOWN, "text");
+                        String ruleQuestion = getAnswerString(answerList, REGISTRATION_FIELD_ID_RULE, "text");
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("New Adventurer Registration from " + name)
+                                .setAuthor(username)
+                                .addField("Email", email, false)
+                                .addField("Town Name", townName, true)
+                                .addField("Rule Question", ruleQuestion, true)
+                                .setDescription("Check the Sheet for more information.")
+                                .setColor(new Color(73, 98, 62))
+                                .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
+                                .build();
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                    } catch (IllegalArgumentException ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Adventurer Registration is too long. Not sending.").queue();
+                    }
                 });
             }
 
@@ -113,20 +110,24 @@ public class FormModule extends Module {
             if (responses.getInt("total_items") > 0) {
                 Loggers.APPLICATION_LOG.info("Got new Applications: <{}>", responses.getInt("total_items"));
                 responses.getJSONArray("items").forEach(item -> {
-                    JSONObject response = ((JSONObject) item);
-                    JSONArray answers = response.getJSONArray("answers");
-                    List<Object> answerList = answers.toList();
+                    try {
+                        JSONObject response = ((JSONObject) item);
+                        JSONArray answers = response.getJSONArray("answers");
+                        List<Object> answerList = answers.toList();
 
-                    String username = getAnswerString(answerList, APPLICATION_FIELD_ID_USERNAME, "text");
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("New DM Application.")
-                            .setAuthor(username)
-                            .setDescription("Check the Sheet for more information.")
-                            .setColor(new Color(254, 122, 65))
-                            .setThumbnail("https://res.cloudinary.com/teepublic/image/private/s--nXMgcagO--/t_Preview/b_rgb%3A191919%2Cc_limit%2Cf_auto%2Ch_313%2Cq_90%2Cw_313/v1515831469/production/designs/2276218_0")
-                            .build();
-                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                        String username = getAnswerString(answerList, APPLICATION_FIELD_ID_USERNAME, "text");
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("New DM Application.")
+                                .setAuthor(username)
+                                .setDescription("Check the Sheet for more information.")
+                                .setColor(new Color(254, 122, 65))
+                                .setThumbnail("https://res.cloudinary.com/teepublic/image/private/s--nXMgcagO--/t_Preview/b_rgb%3A191919%2Cc_limit%2Cf_auto%2Ch_313%2Cq_90%2Cw_313/v1515831469/production/designs/2276218_0")
+                                .build();
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
 
+                    } catch (IllegalArgumentException ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("DM Application is too long. Not sending.").queue();
+                    }
                 });
             }
 
@@ -134,21 +135,25 @@ public class FormModule extends Module {
             if (responses.getInt("total_items") > 0) {
                 Loggers.APPLICATION_LOG.info("Got new Incident Reports: <{}>", responses.getInt("total_items"));
                 responses.getJSONArray("items").forEach(item -> {
-                    JSONObject response = ((JSONObject) item);
-                    JSONArray answers = response.getJSONArray("answers");
-                    List<Object> answerList = answers.toList();
+                    try {
+                        JSONObject response = ((JSONObject) item);
+                        JSONArray answers = response.getJSONArray("answers");
+                        List<Object> answerList = answers.toList();
 
-                    String username = getAnswerString(answerList, INCIDENT_REPORT_FIELD_ID_USERNAME, "text");
-                    Integer severity = getAnswerInteger(answerList, INCIDENT_REPORT_FIELD_ID_SEVERITY, "number");
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("New severity " + severity + " incident report.")
-                            .setAuthor(username)
-                            .setDescription("Check the Sheet for more information.")
-                            .setColor(new Color(239, 93, 67))
-                            .setThumbnail("https://cdn4.iconfinder.com/data/icons/alphabet-3/500/Alert_exclamation_exclamation_mark_mark-512.png")
-                            .build();
-                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                        String username = getAnswerString(answerList, INCIDENT_REPORT_FIELD_ID_USERNAME, "text");
+                        Integer severity = getAnswerInteger(answerList, INCIDENT_REPORT_FIELD_ID_SEVERITY);
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("New severity " + severity + " incident report.")
+                                .setAuthor(username)
+                                .setDescription("Check the Sheet for more information.")
+                                .setColor(new Color(239, 93, 67))
+                                .setThumbnail("https://cdn4.iconfinder.com/data/icons/alphabet-3/500/Alert_exclamation_exclamation_mark_mark-512.png")
+                                .build();
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
 
+                    } catch (IllegalArgumentException ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Incident report is too long. Not sending.").queue();
+                    }
                 });
             }
 
@@ -156,42 +161,65 @@ public class FormModule extends Module {
             if (responses.getInt("total_items") > 0) {
                 Loggers.APPLICATION_LOG.info("Got new Council Applications: <{}>", responses.getInt("total_items"));
                 responses.getJSONArray("items").forEach(item -> {
-                    JSONObject response = ((JSONObject) item);
-                    JSONArray answers = response.getJSONArray("answers");
-                    List<Object> answerList = answers.toList();
+                    try {
 
-                    String username = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_USERNAME, "text");
-                    String charactername = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_CHARACTER_NAME, "text");
-                    Boolean isOnlyCharacter = getAnswerBoolean(answerList, COUNCIL_APPLICATION_FIELD_ID_ONLY_COUNCIL_CHARACTER, "boolean");
-                    String availability = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_AVAILABILITY, "text");
-                    String whyJoin = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_WHY_JOIN, "text");
-                    String workSoFar = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_WORK_SO_FAR, "text");
-                    String futureVision = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_FUTURE_VISION, "text");
+                        JSONObject response = ((JSONObject) item);
+                        JSONArray answers = response.getJSONArray("answers");
+                        List<Object> answerList = answers.toList();
+
+                        String username = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_USERNAME, "text");
+                        String charactername = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_CHARACTER_NAME, "text");
+                        Boolean isOnlyCharacter = getAnswerBoolean(answerList, COUNCIL_APPLICATION_FIELD_ID_ONLY_COUNCIL_CHARACTER);
+                        String availability = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_AVAILABILITY, "text");
+                        String whyJoin = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_WHY_JOIN, "text");
+                        String workSoFar = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_WORK_SO_FAR, "text");
+                        String futureVision = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_FUTURE_VISION, "text");
 
 
-                    MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("New council application.")
-                            .setAuthor(charactername)
-                            .setFooter("Application from " + username + ".", null)
-                            .addField("Is this your only character on the council?", isOnlyCharacter ? "Yes" : "No", true)
-                            .addField("Availability", availability, false)
-                            .addField("Why do you want to be a council member?", whyJoin, false)
-                            .addField("What have you done for Lerwick and the Guild so far?", workSoFar, false)
-                            .addField("What is your vision for Lerwick and the Hawthorne Guild’s future?", futureVision, false)
-                            .build();
-                    TextChannel channel = HawthorneBot.instance().getClient().getTextChannelById(386486269053763584L);
-                    Message message = new MessageBuilder()
-                            .append(HawthorneBot.instance().getClient().getGuildById(308324031478890497L).getRoleById(308325470930206720L).getAsMention())
-                            .build();
-                    channel.sendMessage(message).queue();
-                    channel.sendMessage(embed).queue();
+                        MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("New council application.")
+                                .setAuthor(charactername)
+                                .setFooter("Application from " + username + ".", null)
+                                .addField("Is this your only character on the council?", isOnlyCharacter ? "Yes" : "No", true)
+                                .addField("Availability", availability, false)
+                                .addField("Why do you want to be a council member?", whyJoin, false)
+                                .addField("What have you done for Lerwick and the Guild so far?", workSoFar, false)
+                                .addField("What is your vision for Lerwick and the Hawthorne Guild’s future?", futureVision, false)
+                                .build();
+                        TextChannel channel = HawthorneBot.instance().getClient().getTextChannelById(386486269053763584L);
+                        Message message = new MessageBuilder()
+                                .append(HawthorneBot.instance().getClient().getGuildById(308324031478890497L).getRoleById(308325470930206720L).getAsMention())
+                                .build();
+                        channel.sendMessage(message).queue();
+                        channel.sendMessage(embed).queue();
 
+                    } catch (IllegalArgumentException ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(386486269053763584L).sendMessage("New council application is too long. Not sending.").queue();
+                    }
                 });
             }
 
         } catch (UnirestException ex) {
             Loggers.APPLICATION_LOG.warn("Unirest Exception: ", ex);
         }
+    }
+
+    private Map<String, Object> getAnswers(List<Object> answerList, Map<String, String> searchPairs) {
+        Map<String, Object> answers = new HashMap<>();
+        searchPairs.forEach((key, type) -> {
+            switch(type) {
+                case "boolean":
+                    answers.put(key, getAnswerBoolean(answerList, key));
+                    break;
+                case "number":
+                    answers.put(key, getAnswerInteger(answerList, key));
+                    break;
+                default:
+                    answers.put(key, getAnswerString(answerList, key, type));
+                    break;
+            }
+        });
+        return answers;
     }
 
     private String getAnswerString(List<Object> answerList, String fieldId, String type) {
@@ -206,20 +234,20 @@ public class FormModule extends Module {
                 : "";
     }
 
-    private Integer getAnswerInteger(List<Object> answerList, String fieldId, String type) {
+    private Integer getAnswerInteger(List<Object> answerList, String fieldId) {
         Optional<Object> objectOptional = answerList
                 .stream()
                 .filter(a -> (fieldId.equals(((HashMap) ((HashMap) a).get("field")).get("id"))))
                 .findFirst();
-        return objectOptional.filter(o -> ((HashMap) o).get(type) != null).map(o -> ((Integer) ((HashMap) o).get(type))).orElse(-1);
+        return objectOptional.filter(o -> ((HashMap) o).get("number") != null).map(o -> ((Integer) ((HashMap) o).get("number"))).orElse(-1);
     }
 
-    private Boolean getAnswerBoolean(List<Object> answerList, String fieldId, String type) {
+    private Boolean getAnswerBoolean(List<Object> answerList, String fieldId) {
         Optional<Object> objectOptional = answerList
                 .stream()
                 .filter(a -> (fieldId.equals(((HashMap) ((HashMap) a).get("field")).get("id"))))
                 .findFirst();
-        return objectOptional.filter(o -> ((HashMap) o).get(type) != null).map(o -> ((Boolean) ((HashMap) o).get(type))).orElse(false);
+        return objectOptional.filter(o -> ((HashMap) o).get("boolean") != null).map(o -> ((Boolean) ((HashMap) o).get("boolean"))).orElse(false);
     }
 
     private HttpResponse<JsonNode> getFormResponsesSinceDate(String formId, Date fromDate) throws UnirestException {
@@ -250,7 +278,7 @@ public class FormModule extends Module {
             //Restart Scheduler
             if (scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) scheduledExecutorService.shutdown();
             scheduledExecutorService = Executors.newScheduledThreadPool(1);
-            scheduledExecutorService.scheduleAtFixedRate(runnable, 5, 5, TimeUnit.MINUTES);
+            scheduledExecutorService.scheduleAtFixedRate(this::performCheck, 5, 5, TimeUnit.MINUTES);
         }
     }
 

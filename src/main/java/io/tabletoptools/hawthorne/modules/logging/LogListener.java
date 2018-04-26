@@ -14,6 +14,7 @@
  */
 package io.tabletoptools.hawthorne.modules.logging;
 
+import com.google.cloud.bigquery.*;
 import net.dv8tion.jda.client.events.call.CallCreateEvent;
 import net.dv8tion.jda.client.events.call.CallDeleteEvent;
 import net.dv8tion.jda.client.events.call.GenericCallEvent;
@@ -32,6 +33,7 @@ import net.dv8tion.jda.client.events.message.group.react.GroupMessageReactionAdd
 import net.dv8tion.jda.client.events.message.group.react.GroupMessageReactionRemoveAllEvent;
 import net.dv8tion.jda.client.events.message.group.react.GroupMessageReactionRemoveEvent;
 import net.dv8tion.jda.client.events.relationship.*;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.*;
 import net.dv8tion.jda.core.events.channel.category.CategoryCreateEvent;
 import net.dv8tion.jda.core.events.channel.category.CategoryDeleteEvent;
@@ -83,7 +85,13 @@ import net.dv8tion.jda.core.events.self.*;
 import net.dv8tion.jda.core.events.user.*;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
+import javax.xml.crypto.Data;
+import java.util.HashMap;
+import java.util.Map;
+
 public class LogListener extends ListenerAdapter {
+
+    private static final BigQuery BIG_QUERY = BigQueryOptions.getDefaultInstance().getService();
 
     @Override
     public void onReady(ReadyEvent event) {
@@ -123,33 +131,25 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        Loggers.MESSAGE_RECEIVED_LOG.info(
-                "<{}> in <{}> || <{}> by <{}>: <{}>",
-                event.getMessage().getId(),
-                event.getGuild().getName(),
-                event.getChannel().getName(),
-                event.getAuthor().getName(),
-                event.getMessage().getContentRaw());
+
+        Map<String, String> content = new HashMap<>();
+        content.put("messageId", event.getMessageId());
+        content.put("message", event.getMessage().getContentRaw());
+        content.put("authorId", event.getAuthor().getId());
+        content.put("channelId", event.getMessage().getChannel().getId());
+        //content.put("attachments", event.getMessage().getAttachments().stream().map(Message.Attachment::getProxyUrl).reduce("", (a, b) -> a + "," + b));
+
+        InsertAllRequest.RowToInsert rowToInsert = InsertAllRequest.RowToInsert.of(content);
+
+
     }
 
     @Override
     public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
-        Loggers.MESSAGE_EDIT_LOG.info(
-                "<{}> in <{}> || <{}> by <{}>: <{}>",
-                event.getMessage().getId(),
-                event.getGuild().getName(),
-                event.getChannel().getName(),
-                event.getAuthor().getName(),
-                event.getMessage().getContentRaw());
     }
 
     @Override
     public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
-        Loggers.MESSAGE_DELETE_LOG.info(
-                "<{}> in <{}> || <{}>",
-                event.getMessageId(),
-                event.getGuild().getName(),
-                event.getChannel().getName());
     }
 
 }

@@ -1,6 +1,11 @@
 package io.tabletoptools.hawthorne;
 
 import ch.hive.discord.bots.commands.CommandBase;
+import com.google.cloud.logging.Logging;
+import com.google.cloud.logging.LoggingOptions;
+import com.google.gson.Gson;
+import com.mashape.unirest.http.ObjectMapper;
+import com.mashape.unirest.http.Unirest;
 import io.tabletoptools.discord.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.listener.GuildMemberListener;
@@ -30,11 +35,10 @@ import java.util.HashMap;
 public class HawthorneBot {
 
     public static final String BOT_OWNER_ICON = "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png";
-    private static final String BOT_PREFIX = "/h";
-    public final String FOOTER = "Hawthorne Bot";
+    private static final String BOT_PREFIX = "dev!";
+    public final String FOOTER = "DEV_BOT";
     private static HawthorneBot bot;
     private JDA client;
-    private static Thread updateThread;
     private HashMap<Long, RollSettings> rollMessages = new HashMap<>();
     private String token;
     private String typeformToken;
@@ -71,37 +75,46 @@ public class HawthorneBot {
                 token = args[0];
             }
 
-            instance().start(token);
-            instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
-            Runtime.getRuntime().addShutdownHook(new Thread() {
+            Unirest.setObjectMapper(new ObjectMapper() {
+                private Gson gson = new Gson();
 
-                @Override
-                public void run() {
-                    performShutdown();
+                public <T> T readValue(String s, Class<T> aClass) {
+                    try{
+                        return gson.fromJson(s, aClass);
+                    }catch(Exception e){
+                        throw new RuntimeException(e);
+                    }
                 }
 
+                public String writeValue(Object o) {
+                    try{
+                        return gson.toJson(o);
+                    }catch(Exception e){
+                        throw new RuntimeException(e);
+                    }
+                }
             });
 
-            updateThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (!HawthorneBot.shutdown) {
-                            long updateCounter = 0;
-                            while (!HawthorneBot.shutdown && updateCounter < 300) {
-                                updateCounter++;
-                                Thread.sleep(1000);
-                            }
-                            try {
-                                if (!HawthorneBot.shutdown) ItemService.instance().update();
-                            }
-                            catch (NotAuthenticatedException ex) {
+            instance().start(token);
+            instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
+            Runtime.getRuntime().addShutdownHook(new Thread(HawthorneBot::performShutdown));
 
-                            }
+            Thread updateThread = new Thread(() -> {
+                try {
+                    while (!HawthorneBot.shutdown) {
+                        long updateCounter = 0;
+                        while (!HawthorneBot.shutdown && updateCounter < 300) {
+                            updateCounter++;
+                            Thread.sleep(1000);
                         }
-                    } catch (InterruptedException ex) {
-
+                        try {
+                            if (!HawthorneBot.shutdown) ItemService.instance().update();
+                        } catch (NotAuthenticatedException ex) {
+                            Loggers.APPLICATION_LOG.error("Exception: ", ex);
+                        }
                     }
+                } catch (InterruptedException ex) {
+                    Loggers.APPLICATION_LOG.error("Exception: ", ex);
                 }
             });
 
@@ -122,9 +135,10 @@ public class HawthorneBot {
         }
     }
 
-    public void start(String token) throws RateLimitedException, LoginException, InterruptedException {
+    private void start(String token) throws RateLimitedException, LoginException, InterruptedException {
 
         this.token = token;
+
 
         Loggers.APPLICATION_LOG.info("Loading data for the first time.");
         try {
@@ -159,7 +173,7 @@ public class HawthorneBot {
         return typeformToken;
     }
 
-    public void setTypeformToken(String typeformToken) {
+    private void setTypeformToken(String typeformToken) {
         this.typeformToken = typeformToken;
     }
 
