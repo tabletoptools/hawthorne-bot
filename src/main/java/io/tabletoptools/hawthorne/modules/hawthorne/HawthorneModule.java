@@ -26,9 +26,9 @@ public class HawthorneModule extends Module {
     @Override
     public void onLoad() {
         this.addCommandClass(HawthorneCommands.class);
-        this.loadSubmodule(new FormModule(), false);
+        this.loadSubmodule(new FormModule());
         this.loadSubmodule(new LoggingModule(), false);
-        this.loadSubmodule(new APIModule());
+        this.loadSubmodule(new APIModule(), false);
 
     }
 
