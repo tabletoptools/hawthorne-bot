@@ -110,6 +110,7 @@ public class GeneralCommands {
         Member member = event.getMessage().getMentionedMembers().get(0);
         event.getMessage().delete().queue();
         event.getGuild().getController().addSingleRoleToMember(member, event.getGuild().getRoleById(343394051938320388L)).queue();
+        event.getGuild().getController().addSingleRoleToMember(member, event.getGuild().getRoleById(418756942941650955L)).queue();
         event.getChannel().sendMessage("Made " + member.getEffectiveName() + " a trial DM.").queue();
 
     }
