@@ -90,7 +90,7 @@ public class ItemService {
         }
     }
 
-    private final String itemSheetId = "1m6Qb1AIBRNNNBukJd_7Tzciw7LDZs8WurgWQbYaTWLA";
+    private final String itemSheetId = "1vj5ASpndXA4RFNV0L-ib7uvltLjH-k4FrqQWJG2uABM";
 
     public void load() throws NotAuthenticatedException {
         Loggers.APPLICATION_LOG.debug("Loading Item List");

@@ -6,13 +6,18 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import io.tabletoptools.discord.modulizer.Module;
 import io.tabletoptools.discord.modulizer.annotation.Command;
 import io.tabletoptools.hawthorne.HawthorneBot;
+import io.tabletoptools.hawthorne.model.AdventurerRegistration;
 import io.tabletoptools.hawthorne.modules.formhooks.DiscordUser;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.Role;
 import org.json.JSONArray;
+import spark.Request;
 import spark.ResponseTransformer;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +75,28 @@ public class APIModule extends Module {
                         roles.forEach(role -> idNameMap.put(role.getId(), role.getName()));
                         return idNameMap;
             }, responseTransformer);
+
+            path("/request", () -> {
+                post("/adventurer-registration", (request, response) -> {
+                    Gson gson = new Gson();
+                    AdventurerRegistration adventurerRegistration = gson.fromJson(request.body(), AdventurerRegistration.class);
+                    DiscordUser user = this.getUser(request);
+                    MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("New Adventurer Registration.")
+                            .setAuthor(user.getUsername(), null, user.getAvatar())
+                            .addField("Email", adventurerRegistration.getEmail(), false)
+                            .addField("Birthdate", adventurerRegistration.getBirthdate().toString(), false)
+                            .addField("Town Name", adventurerRegistration.getTownName(), true)
+                            .addField("Rule Question", adventurerRegistration.getRuleTwo(), true)
+                            .setDescription("Check the Sheet for more information.")
+                            .setColor(new Color(73, 98, 62))
+                            .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
+                            .build();
+                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                    return "";
+                });
+            });
+
             options("/*", (request, response) -> "");
         });
         /*before(((request, response) -> {
@@ -78,6 +105,10 @@ public class APIModule extends Module {
         after((request, response) -> {
             response.header("Content-Encoding", "gzip");
         });
+    }
+
+    private DiscordUser getUser(Request request) throws UnirestException {
+        return getUser(request.headers("Authorization"));
     }
 
     private DiscordUser getUser(String authorization) throws UnirestException {
