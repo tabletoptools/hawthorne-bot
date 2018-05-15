@@ -1,6 +1,7 @@
 package io.tabletoptools.hawthorne.modules.api;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.tabletoptools.discord.modulizer.Module;
@@ -45,6 +46,7 @@ public class APIModule extends Module {
     @Override
     public void onLoad() {
 
+        port(80);
         Loggers.APPLICATION_LOG.info("Starting Spark Server.");
         staticFiles.location("/public");
         get("/status", (request, response) -> "Okay");
@@ -52,7 +54,7 @@ public class APIModule extends Module {
             before("/*", (q, a) -> {
                 a.header("Access-Control-Allow-Origin", "*");
                 a.header("Access-Control-Allow-Credentials", "true");
-                a.header("Access-Control-Allow-Headers", "authorization");
+                a.header("Access-Control-Allow-Headers", "authorization,content-type");
             });
             before("/*", (q, a) -> {
                 if(q.headers("Authorization") == null && !"OPTIONS".equals(q.requestMethod())) halt(403, "Not authorised.");
@@ -83,15 +85,28 @@ public class APIModule extends Module {
                     DiscordUser user = this.getUser(request);
                     MessageEmbed embed = new EmbedBuilder()
                             .setTitle("New Adventurer Registration.")
-                            .setAuthor(user.getUsername(), null, user.getAvatar())
-                            .addField("Email", adventurerRegistration.getEmail(), false)
+                            .setAuthor(user.getUsername(), null, "https://cdn.discordapp.com/" + "avatars/"+ user.getId() +"/"+ user.getAvatar() +".png?size=256")
+                            .addField("Email", user.getEmail(), true)
+                            .addField("Discord Handle", user.getUsername()+"#"+user.getDiscriminator(), true)
                             .addField("Birthdate", adventurerRegistration.getBirthdate().toString(), false)
                             .addField("Town Name", adventurerRegistration.getTownName(), true)
                             .addField("Rule Question", adventurerRegistration.getRuleTwo(), true)
+                            .setFooter("User Id: " + user.getId(), null)
                             .setDescription("Check the Sheet for more information.")
                             .setColor(new Color(73, 98, 62))
                             .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
                             .build();
+                    if(!HAWTHORNE_GUILD.getMemberById(user.getId()).getRoles().stream().anyMatch(role -> "445939304695595028".equals(role.getId())))
+                        HAWTHORNE_GUILD
+                                .getController()
+                                .addSingleRoleToMember(
+                                        HAWTHORNE_GUILD
+                                                .getMemberById(user.getId()),
+                                        HawthorneBot
+                                                .instance()
+                                                .getClient()
+                                                .getRoleById(445939304695595028L))
+                                .queue();
                     HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
                     return "";
                 });
@@ -113,11 +128,12 @@ public class APIModule extends Module {
 
     private DiscordUser getUser(String authorization) throws UnirestException {
         if(AUTH_TOKEN_USER_MAP.containsKey(authorization)) return AUTH_TOKEN_USER_MAP.get(authorization);
-        DiscordUser user = Unirest.get(DISCORD_API_BASE_URL + "/users/@me")
+        HttpResponse<DiscordUser> response = Unirest.get(DISCORD_API_BASE_URL + "/users/@me")
                 .header("Authorization", authorization)
-                .asObject(DiscordUser.class)
-                .getBody();
-        return AUTH_TOKEN_USER_MAP.put(authorization, user);
+                .asObject(DiscordUser.class);
+
+        AUTH_TOKEN_USER_MAP.put(authorization, response.getBody());
+        return response.getBody();
     }
 
     @Override
@@ -132,7 +148,7 @@ public class APIModule extends Module {
             //Restart Scheduler
             if (this.scheduledExecutorService != null && !scheduledExecutorService.isShutdown()) scheduledExecutorService.shutdown();
             scheduledExecutorService = Executors.newScheduledThreadPool(1);
-            scheduledExecutorService.scheduleAtFixedRate(AUTH_TOKEN_USER_MAP::clear, 1, 1, TimeUnit.DAYS);
+            scheduledExecutorService.scheduleAtFixedRate(AUTH_TOKEN_USER_MAP::clear, 1, 10, TimeUnit.MINUTES);
         }
     }
 
