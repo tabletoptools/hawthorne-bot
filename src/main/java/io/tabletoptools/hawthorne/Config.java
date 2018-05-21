@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import org.json.JSONObject;
-import sun.rmi.rmic.iiop.ClassPathLoader;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,7 +35,7 @@ public class Config {
             throw new IOException();
         }
         String environment = System.getenv("env");
-        URL configURL = ClassPathLoader.getSystemClassLoader().getResource("environments.json");
+        URL configURL = ClassLoader.getSystemClassLoader().getResource("environments.json");
         if (configURL == null) {
             Loggers.APPLICATION_LOG.error("Configuration file not present: <environments.json>.");
             throw new IOException();
