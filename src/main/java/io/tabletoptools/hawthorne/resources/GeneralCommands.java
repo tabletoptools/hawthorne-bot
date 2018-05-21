@@ -6,17 +6,13 @@ import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.jexl3.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GeneralCommands {
 
@@ -95,8 +91,7 @@ public class GeneralCommands {
         Member member = event.getMessage().getMentionedMembers().get(0);
 
         event.getMessage().delete().queue();
-        if(member.getRoles().stream().anyMatch(role -> "445939304695595028".equals(role.getId())))
-            event.getGuild().getController().removeSingleRoleFromMember(member, event.getGuild().getRoleById(445939304695595028L)).queue();
+        event.getGuild().getController().removeSingleRoleFromMember(member, event.getGuild().getRoleById(445939304695595028L)).queue();
         event.getGuild().getController().addSingleRoleToMember(member, event.getGuild().getRoleById(343393950079385610L)).queue();
         event.getChannel().sendMessage("Made " + member.getEffectiveName() + " an adventurer.").queue();
 

@@ -8,12 +8,13 @@
     </appender>
     <root level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="ref/hawthorne/bot/application"/>
     </root>
 
     <!--Application Log-->
     <appender name="ref/hawthorne/bot/application" class="com.google.cloud.logging.logback.LoggingAppender">
         <log>hawthorne/bot/application</log>
-        <flushLevel>WARN</flushLevel>
+        <flushLevel>INFO</flushLevel>
     </appender>
     <logger name="hawthorne/bot/application" level="INFO">
         <appender-ref ref="ref/hawthorne/bot/application" />

@@ -1,8 +1,6 @@
 package io.tabletoptools.hawthorne;
 
 import ch.hive.discord.bots.commands.CommandBase;
-import com.google.cloud.logging.Logging;
-import com.google.cloud.logging.LoggingOptions;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
@@ -13,12 +11,9 @@ import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
 import io.tabletoptools.hawthorne.listener.MessageListener;
 import io.tabletoptools.hawthorne.listener.ReactionListener;
 import io.tabletoptools.hawthorne.model.RollSettings;
-import io.tabletoptools.hawthorne.modules.api.APIModule;
 import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
-import io.tabletoptools.hawthorne.modules.formhooks.FormModule;
 import io.tabletoptools.hawthorne.modules.hawthorne.HawthorneModule;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import io.tabletoptools.hawthorne.modules.logging.LoggingModule;
 import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
@@ -35,8 +30,8 @@ import java.util.HashMap;
 public class HawthorneBot {
 
     public static final String BOT_OWNER_ICON = "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png";
-    private static final String BOT_PREFIX = "/h";
-    public final String FOOTER = "Hawthorne Bot";
+    private static final String BOT_PREFIX = Config.instance().getString("prefix");
+    public final String FOOTER = Config.instance().getString("footer");
     private static HawthorneBot bot;
     private JDA client;
     private HashMap<Long, RollSettings> rollMessages = new HashMap<>();
@@ -196,9 +191,7 @@ public class HawthorneBot {
     private static void performShutdown() {
         if (isShutdown) return;
         Loggers.APPLICATION_LOG.info("Removing all pending rolls.");
-        instance().getRollMessages().forEach((id, settings) -> {
-            settings.getMessage().delete().queue();
-        });
+        instance().getRollMessages().forEach((id, settings) -> settings.getMessage().delete().queue());
         instance().getRollMessages().clear();
         Loggers.APPLICATION_LOG.info("Shutting down client.");
 

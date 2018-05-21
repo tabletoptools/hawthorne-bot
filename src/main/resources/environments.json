@@ -1,0 +1,20 @@
+{
+  "production": {
+    "configurationEntries": {
+      "prefix": "/h",
+      "footer": "Hawthorne Bot"
+    }
+  },
+  "development": {
+    "configurationEntries": {
+      "prefix": "dev!",
+      "footer": "DEV_BOT"
+    }
+  },
+  "test": {
+    "configurationEntries": {
+      "prefix": "testprefix",
+      "footer": "TEST_BOT"
+    }
+  }
+}
