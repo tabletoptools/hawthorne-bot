@@ -55,55 +55,56 @@ public class APIModule extends Module {
             a.header("Access-Control-Allow-Credentials", "true");
             a.header("Access-Control-Allow-Headers", "authorization,content-type");
         });
-        before("/*", (q, a) -> {
-            if (q.headers("Authorization") == null && !"OPTIONS".equals(q.requestMethod())) halt(403, "Not authorised.");
-        });
         get("/status", (request, response) -> "Okay");
-        get("/user", "application/json", (request, response) -> {
-            String auth = request.headers("Authorization");
-            return getUser(auth);
-        }, responseTransformer);
-        get("/in-hawthorne", (request, response) -> {
-            String auth = request.headers("Authorization");
-            JSONArray guilds = Unirest.get(DISCORD_API_BASE_URL + "/users/@me/guilds")
-                    .header("Authorization", auth)
-                    .asJson().getBody().getArray();
+        path("/api", () -> {
+            before("/*", (q, a) -> {
+                if (q.headers("Authorization") == null && !"OPTIONS".equals(q.requestMethod())) halt(403, "Not authorised.");
+            });
+            get("/user", "application/json", (request, response) -> {
+                String auth = request.headers("Authorization");
+                return getUser(auth);
+            }, responseTransformer);
+            get("/in-hawthorne", (request, response) -> {
+                String auth = request.headers("Authorization");
+                JSONArray guilds = Unirest.get(DISCORD_API_BASE_URL + "/users/@me/guilds")
+                        .header("Authorization", auth)
+                        .asJson().getBody().getArray();
 
-            return guilds.toList().stream().anyMatch(guild -> "308324031478890497".equals(((HashMap) guild).get("id")));
-        });
-        get("/roles", "application/json", (request, response) -> {
-            List<Role> roles = HAWTHORNE_GUILD.getMemberById(getUser(request.headers("Authorization")).getId()).getRoles();
-            Map<String, String> idNameMap = new HashMap<>();
-            roles.forEach(role -> idNameMap.put(role.getId(), role.getName()));
-            return idNameMap;
-        }, responseTransformer);
+                return guilds.toList().stream().anyMatch(guild -> "308324031478890497".equals(((HashMap) guild).get("id")));
+            });
+            get("/roles", "application/json", (request, response) -> {
+                List<Role> roles = HAWTHORNE_GUILD.getMemberById(getUser(request.headers("Authorization")).getId()).getRoles();
+                Map<String, String> idNameMap = new HashMap<>();
+                roles.forEach(role -> idNameMap.put(role.getId(), role.getName()));
+                return idNameMap;
+            }, responseTransformer);
 
-        path("/request", () -> {
-            post("/adventurer-registration", (request, response) -> {
-                Gson gson = new Gson();
-                AdventurerRegistration adventurerRegistration = gson.fromJson(request.body(), AdventurerRegistration.class);
-                DiscordUser user = this.getUser(request);
-                MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("New Adventurer Registration.")
-                        .setAuthor(user.getUsername(), null, "https://cdn.discordapp.com/" + "avatars/" + user.getId() + "/" + user.getAvatar() + ".png?size=256")
-                        .addField("Email", user.getEmail(), true)
-                        .addField("Discord Handle", user.getUsername() + "#" + user.getDiscriminator(), true)
-                        .addField("Birthdate", adventurerRegistration.getBirthdate().toString(), false)
-                        .addField("Town Name", adventurerRegistration.getTownName(), true)
-                        .addField("Rule Question", adventurerRegistration.getRuleTwo(), true)
-                        .setFooter("User Id: " + user.getId(), null)
-                        .setDescription("Check the Sheet for more information.")
-                        .setColor(new Color(73, 98, 62))
-                        .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
-                        .build();
-                HAWTHORNE_GUILD.getController()
-                        .addSingleRoleToMember(HAWTHORNE_GUILD.getMemberById(user.getId()), HawthorneBot.instance().getClient().getRoleById(445939304695595028L))
-                        .queue();
-                HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
-                return "";
+            path("/request", () -> {
+                post("/adventurer-registration", (request, response) -> {
+                    Gson gson = new Gson();
+                    AdventurerRegistration adventurerRegistration = gson.fromJson(request.body(), AdventurerRegistration.class);
+                    DiscordUser user = this.getUser(request);
+                    MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("New Adventurer Registration.")
+                            .setAuthor(user.getUsername(), null, "https://cdn.discordapp.com/" + "avatars/" + user.getId() + "/" + user.getAvatar() + ".png?size=256")
+                            .addField("Email", user.getEmail(), true)
+                            .addField("Discord Handle", user.getUsername() + "#" + user.getDiscriminator(), true)
+                            .addField("Birthdate", adventurerRegistration.getBirthdate().toString(), false)
+                            .addField("Town Name", adventurerRegistration.getTownName(), true)
+                            .addField("Rule Question", adventurerRegistration.getRuleTwo(), true)
+                            .setFooter("User Id: " + user.getId(), null)
+                            .setDescription("Check the Sheet for more information.")
+                            .setColor(new Color(73, 98, 62))
+                            .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
+                            .build();
+                    HAWTHORNE_GUILD.getController()
+                            .addSingleRoleToMember(HAWTHORNE_GUILD.getMemberById(user.getId()), HawthorneBot.instance().getClient().getRoleById(445939304695595028L))
+                            .queue();
+                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                    return "";
+                });
             });
         });
-
         options("/*", (request, response) -> "");
         /*before(((request, response) -> {
             if(!this.isEnabled()) halt(503, "API Module not enabled.");
