@@ -8,10 +8,7 @@ public class PRConstraint extends ConstraintCheck {
 
     @Override
     public boolean check(MessageReceivedEvent event) {
-        if(event.getMember().getRoles().contains(HawthorneBot.instance().getClient().getRoleById(308325007421865984L))) {
-            return true;
-        }
-        return false;
+        return event.getMember().getRoles().contains(HawthorneBot.instance().getClient().getRoleById(308325007421865984L));
     }
 
     @Override

@@ -15,12 +15,13 @@ before_install:
   if [ ! -d $HOME/google-cloud-sdk ]; then
     curl https://sdk.cloud.google.com | bash;
   fi
-- BUILD_VERSION="1.5.1"
+- BUILD_VERSION="1.6.0"
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file deploy-key.json
 before_deploy:
-- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION --build-arg TYPEFORM_TOKEN=$TYPEFORM_TOKEN
+- curl https://download.sqreen.io/java/sqreen-latest-all.jar -o sqreen.jar
+- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION --build-arg TYPEFORM_TOKEN=$TYPEFORM_TOKEN --build-arg SQREEN_TOKEN=$SQREEN_TOKEN
   -t us.gcr.io/hawthorne-197812/hawthorne-bot:$BUILD_VERSION .
 deploy:
   provider: script

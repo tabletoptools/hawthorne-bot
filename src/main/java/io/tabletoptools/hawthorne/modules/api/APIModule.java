@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.tabletoptools.discord.modulizer.Module;
 import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.Config;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.model.AdventurerRegistration;
 import io.tabletoptools.hawthorne.modules.formhooks.DiscordUser;
@@ -47,7 +48,7 @@ public class APIModule extends Module {
     @Override
     public void onLoad() {
 
-        port(80);
+        port(Config.instance().getInteger("apiPort"));
         Loggers.APPLICATION_LOG.info("Starting Spark Server.");
         staticFiles.location("/public");
         before("/*", (q, a) -> {
@@ -58,7 +59,7 @@ public class APIModule extends Module {
         get("/status", (request, response) -> "Okay");
         path("/api", () -> {
             before("/*", (q, a) -> {
-                if (q.headers("Authorization") == null && !"OPTIONS".equals(q.requestMethod())) halt(403, "Not authorised.");
+                if (q.headers("Authorization") == null && !"OPTIONS".equals(q.requestMethod())) throw halt(403, "Not authorised.");
             });
             get("/user", "application/json", (request, response) -> {
                 String auth = request.headers("Authorization");
@@ -100,7 +101,16 @@ public class APIModule extends Module {
                     HAWTHORNE_GUILD.getController()
                             .addSingleRoleToMember(HAWTHORNE_GUILD.getMemberById(user.getId()), HawthorneBot.instance().getClient().getRoleById(445939304695595028L))
                             .queue();
-                    HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                    try {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
+                    } catch (IllegalArgumentException ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Received an Adventurer Registration from "
+                                + user.getUsername()
+                                + "#"
+                                + user.getDiscriminator()
+                                + " that was too long for the bot to post.").queue();
+                        throw halt(400, "Error: Registration is too long.");
+                    }
                     return "";
                 });
             });

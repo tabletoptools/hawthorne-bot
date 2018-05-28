@@ -16,7 +16,6 @@ package io.tabletoptools.hawthorne.services;
 
 import io.tabletoptools.hawthorne.model.WeightedObject;
 
-import javax.swing.text.html.parser.Entity;
 import java.math.BigDecimal;
 import java.util.List;
 

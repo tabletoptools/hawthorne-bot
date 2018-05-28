@@ -102,6 +102,8 @@ public class FormModule extends Module {
                         HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();
                     } catch (IllegalArgumentException ex) {
                         HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Adventurer Registration is too long. Not sending.").queue();
+                    } catch (Exception ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Unknown Error in Adventurer Registration: " + ex.getMessage()).queue();
                     }
                 });
             }
@@ -127,6 +129,8 @@ public class FormModule extends Module {
 
                     } catch (IllegalArgumentException ex) {
                         HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("DM Application is too long. Not sending.").queue();
+                    } catch (Exception ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Unknown Error in DM Application: " + ex.getMessage()).queue();
                     }
                 });
             }
@@ -153,6 +157,8 @@ public class FormModule extends Module {
 
                     } catch (IllegalArgumentException ex) {
                         HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Incident report is too long. Not sending.").queue();
+                    } catch (Exception ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage("Unknown Error in Incident Report: " + ex.getMessage()).queue();
                     }
                 });
             }
@@ -195,6 +201,8 @@ public class FormModule extends Module {
 
                     } catch (IllegalArgumentException ex) {
                         HawthorneBot.instance().getClient().getTextChannelById(386486269053763584L).sendMessage("New council application is too long. Not sending.").queue();
+                    } catch (Exception ex) {
+                        HawthorneBot.instance().getClient().getTextChannelById(386486269053763584L).sendMessage("Unknown Error in Council Application: " + ex.getMessage()).queue();
                     }
                 });
             }

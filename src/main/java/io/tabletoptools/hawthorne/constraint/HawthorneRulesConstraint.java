@@ -22,10 +22,7 @@ public class HawthorneRulesConstraint extends ConstraintCheck {
 
     @Override
     public boolean check(MessageReceivedEvent event) {
-        if(event.getMember().getRoles().contains(HawthorneBot.instance().getClient().getRoleById(308325009506697227L))) {
-            return true;
-        }
-        return false;
+        return event.getMember().getRoles().contains(HawthorneBot.instance().getClient().getRoleById(308325009506697227L));
     }
 
     @Override

@@ -17,8 +17,6 @@ package io.tabletoptools.hawthorne.modules.coffee;
 import io.tabletoptools.discord.modulizer.Module;
 import io.tabletoptools.discord.modulizer.annotation.Command;
 
-import javax.servlet.http.HttpServletResponse;
-
 @Command("coffee")
 public class CoffeeModule extends Module {
 

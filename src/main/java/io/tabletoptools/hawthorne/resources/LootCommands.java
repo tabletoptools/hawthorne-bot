@@ -4,7 +4,7 @@ import ch.hive.discord.bots.commands.Command;
 import ch.hive.discord.bots.commands.Constraint;
 import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
-import io.tabletoptools.hawthorne.*;
+import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;

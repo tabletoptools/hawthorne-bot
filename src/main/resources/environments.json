@@ -2,19 +2,22 @@
   "production": {
     "configurationEntries": {
       "prefix": "/h",
-      "footer": "Hawthorne Bot"
+      "footer": "Hawthorne Bot",
+      "apiPort": 80
     }
   },
   "development": {
     "configurationEntries": {
       "prefix": "dev!",
-      "footer": "DEV_BOT"
+      "footer": "DEV_BOT",
+      "apiPort": 8081
     }
   },
   "test": {
     "configurationEntries": {
       "prefix": "testprefix",
-      "footer": "TEST_BOT"
+      "footer": "TEST_BOT",
+      "apiPort": 8080
     }
   }
 }
