@@ -40,3 +40,4 @@ src/main/resources/client_secret.json
 /deploy-key.json
 .idea
 /hawthorne-bot.iml
+/credentials.json

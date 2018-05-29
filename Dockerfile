@@ -4,8 +4,10 @@ ARG BUILD_VERSION
 ARG TYPEFORM_TOKEN
 ENV BOT_TOKEN=$BOT_TOKEN
 ENV TYPEFORM_TOKEN=$TYPEFORM_TOKEN
+ENV GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
 ENV env="production"
 ENV SQREEN_TOKEN=$SQREEN_TOKEN
-ADD target/hawthorne-bot-${BUILD_VERSION}-jar-with-dependencies.jar hawthorne-bot.jar
-ADD sqreen.jar sqreen.jar
+COPY target/hawthorne-bot-${BUILD_VERSION}-jar-with-dependencies.jar hawthorne-bot.jar
+COPY sqreen.jar sqreen.jar
+COPY credentials.json credentials.json
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/hawthorne-bot.jar"]

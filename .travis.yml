@@ -21,7 +21,8 @@ before_install:
 - gcloud auth activate-service-account --key-file deploy-key.json
 before_deploy:
 - curl https://download.sqreen.io/java/sqreen-latest-all.jar -o sqreen.jar
-- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION --build-arg TYPEFORM_TOKEN=$TYPEFORM_TOKEN --build-arg SQREEN_TOKEN=$SQREEN_TOKEN
+- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION
+  --build-arg TYPEFORM_TOKEN=$TYPEFORM_TOKEN --build-arg SQREEN_TOKEN=$SQREEN_TOKEN
   -t us.gcr.io/hawthorne-197812/hawthorne-bot:$BUILD_VERSION .
 deploy:
   provider: script
