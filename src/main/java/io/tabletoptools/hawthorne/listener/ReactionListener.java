@@ -57,7 +57,7 @@ public class ReactionListener extends ListenerAdapter {
                         .append(item.getChance().setScale(2, RoundingMode.HALF_UP))
                         .append("%")
                         .append(" | ")
-                        .append(item.getAmountPerLevel().get(settings.getAPL().setScale(0, RoundingMode.HALF_UP).intValue()))
+                        .append(item.getAmountPerLevel().get(settings.getAPL().setScale(0, RoundingMode.HALF_UP).intValue()).getAmount())
                         .append("x ")
                         .append(item.getName());
             } catch (NoItemFoundException | NotAuthenticatedException ex) {

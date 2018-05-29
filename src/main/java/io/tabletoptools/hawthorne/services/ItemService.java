@@ -28,10 +28,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
-import io.tabletoptools.hawthorne.model.Category;
-import io.tabletoptools.hawthorne.model.Item;
-import io.tabletoptools.hawthorne.model.Tier;
-import io.tabletoptools.hawthorne.model.WeightedTierCategoryPair;
+import io.tabletoptools.hawthorne.model.*;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.io.File;
@@ -143,10 +140,19 @@ public class ItemService {
                         String categoryAsString = row.get(3).toString();
                         Category category = Category.fromString(categoryAsString);
 
-                        Map<Integer, Integer> amountPerLevel = new HashMap<>();
+                        Map<Integer, Amount> amountPerLevel = new HashMap<>();
                         for (int i = 4; i < 22; i++) {
-                            int amount = row.get(i) != null ? Integer.parseInt(String.valueOf(row.get(i))) : 1;
-                            amountPerLevel.put(i - 1, amount);
+                            if(row.get(i) == null) {
+                                amountPerLevel.put(i-1, new StaticAmount(1L));
+                            }
+                            else {
+                                try {
+                                    amountPerLevel.put(i-1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
+                                }
+                                catch(NumberFormatException ex) {
+                                    amountPerLevel.put(i-1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
+                                }
+                            }
                         }
 
                         Item item = new Item(name, tier, weight, category, amountPerLevel);

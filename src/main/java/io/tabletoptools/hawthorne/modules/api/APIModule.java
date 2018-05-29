@@ -116,6 +116,7 @@ public class APIModule extends Module {
             });
         });
         options("/*", (request, response) -> "");
+        get("/*", ((request, response) -> halt(404)));
         /*before(((request, response) -> {
             if(!this.isEnabled()) halt(503, "API Module not enabled.");
         }));*/
