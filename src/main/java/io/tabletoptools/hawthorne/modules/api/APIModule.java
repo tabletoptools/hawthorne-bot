@@ -155,8 +155,6 @@ public class APIModule extends Module {
 
     @Override
     public void onDisable() {
-        if (isEnabled()) {
-            if (!scheduledExecutorService.isShutdown()) scheduledExecutorService.shutdown();
-        }
+        if (isEnabled() && !scheduledExecutorService.isShutdown()) scheduledExecutorService.shutdown();
     }
 }

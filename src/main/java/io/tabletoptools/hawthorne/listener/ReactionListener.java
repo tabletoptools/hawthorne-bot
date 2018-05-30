@@ -14,7 +14,7 @@
  */
 package io.tabletoptools.hawthorne.listener;
 
-import io.tabletoptools.hawthorne.*;
+import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.model.Item;
@@ -40,7 +40,7 @@ public class ReactionListener extends ListenerAdapter {
     private void generateLootForMessage(GuildMessageReactionAddEvent event) {
         RollSettings settings = HawthorneBot.instance().getSettingsForMessage(event.getMessageIdLong());
 
-        if(!event.getMember().equals(settings.getAuthor())) {
+        if (!event.getMember().equals(settings.getAuthor())) {
             event.getReaction().removeReaction().queue();
             return;
         }
@@ -60,17 +60,15 @@ public class ReactionListener extends ListenerAdapter {
                         .append(item.getAmountPerLevel().get(settings.getAPL().setScale(0, RoundingMode.HALF_UP).intValue()).getAmount())
                         .append("x ")
                         .append(item.getName());
-            } catch (NoItemFoundException | NotAuthenticatedException ex) {
-                if(ex instanceof NotAuthenticatedException) {
-                    lootFieldBuilder.append("Not Authenticated.");
-                } else {
-                    lootFieldBuilder
-                            .append("No item found for tier <")
-                            .append(((NoItemFoundException) ex).getTierCategoryPair().getTier().toString())
-                            .append("> and category <")
-                            .append(((NoItemFoundException) ex).getTierCategoryPair().getCategory().toString())
-                            .append(">");
-                }
+            } catch (NotAuthenticatedException ex) {
+                lootFieldBuilder.append("Not Authenticated.");
+            } catch (NoItemFoundException ex) {
+                lootFieldBuilder
+                        .append("No item found for tier <")
+                        .append(ex.getTierCategoryPair().getTier().toString())
+                        .append("> and category <")
+                        .append(ex.getTierCategoryPair().getCategory().toString())
+                        .append(">");
             }
             if (x - 1 < settings.getPlayerCount()) {
                 lootFieldBuilder.append("\n");

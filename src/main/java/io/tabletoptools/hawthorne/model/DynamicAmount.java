@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 public class DynamicAmount implements Amount {
 
     private static final Pattern PATTERN = Pattern.compile("([0-9]+)d([0-9]+)");
-    private static final Pattern QUERY_VALIDATION_PATTERN = Pattern.compile("[d0-9-/*+]+");
+    private static final Pattern QUERY_VALIDATION_PATTERN = Pattern.compile("[d0-9-/*+()]+");
     private static final JexlEngine JEXL_ENGINE = new JexlBuilder().create();
     private String query;
 

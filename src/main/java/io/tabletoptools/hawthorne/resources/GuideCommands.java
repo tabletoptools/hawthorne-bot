@@ -24,7 +24,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class GuideCommands {
 
-    final static MessageEmbed DTP_GUIDE = new EmbedBuilder()
+    private final static MessageEmbed DTP_GUIDE = new EmbedBuilder()
             .setTitle("DTP and you!")
             .setColor(HawthorneBot.instance().HAWTHORNE_PURPLE)
             .setDescription("DownTime Points, or known commonly as DTP is used to do many things in your downtime while as a member of Hawthorne Guild. " +

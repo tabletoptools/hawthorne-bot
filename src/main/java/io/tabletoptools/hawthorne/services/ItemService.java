@@ -132,6 +132,7 @@ public class ItemService {
                     try {
                         String name = row.get(0).toString();
 
+
                         Integer numericTier = Integer.parseInt(row.get(1).toString());
                         Tier tier = Tier.valueOf("T" + numericTier);
 
@@ -139,6 +140,8 @@ public class ItemService {
 
                         String categoryAsString = row.get(3).toString();
                         Category category = Category.fromString(categoryAsString);
+
+                        Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier.getTier(), name);
 
                         Map<Integer, Amount> amountPerLevel = new HashMap<>();
                         for (int i = 4; i < 22; i++) {
@@ -150,7 +153,12 @@ public class ItemService {
                                     amountPerLevel.put(i-1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
                                 }
                                 catch(NumberFormatException ex) {
-                                    amountPerLevel.put(i-1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
+                                    try {
+                                        amountPerLevel.put(i - 1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
+                                    } catch (Exception ex2) {
+                                        Loggers.APPLICATION_LOG.warn("Error while getting amount for level and item. Setting default (1): ", ex2);
+                                        amountPerLevel.put(i - 1, new StaticAmount(1L));
+                                    }
                                 }
                             }
                         }

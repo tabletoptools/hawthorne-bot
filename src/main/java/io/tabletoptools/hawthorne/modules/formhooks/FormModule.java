@@ -73,7 +73,7 @@ public class FormModule extends Module {
         try {
             Loggers.APPLICATION_LOG.info("Running check for new form submissions.");
             Date checkDate = lastCheck;
-            lastCheck = new Date();
+            Date lastCheck = new Date();
 
             JSONObject responses = getFormResponsesSinceDate(ADVENTURER_REGISTRATION_FORM_ID, checkDate).getBody().getObject();
             if (responses.getInt("total_items") > 0) {
@@ -206,9 +206,12 @@ public class FormModule extends Module {
                     }
                 });
             }
+            this.lastCheck = lastCheck;
 
         } catch (UnirestException ex) {
             Loggers.APPLICATION_LOG.warn("Unirest Exception: ", ex);
+        } catch (Exception ex) {
+            Loggers.APPLICATION_LOG.warn("Got an unknown error performing a routing forms check: ", ex);
         }
     }
 

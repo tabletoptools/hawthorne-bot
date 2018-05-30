@@ -293,7 +293,7 @@ public class LootCommands {
 
         event.getMessage().delete().queue();
         boolean success = false;
-        if ("respectItemCount".toLowerCase().equals(setting.toLowerCase())) {
+        if ("respectItemCount".equalsIgnoreCase(setting)) {
             Boolean respectItemCount = Boolean.valueOf(value);
             RandomItemService.instance().setRespectItemCount(respectItemCount);
             success = true;

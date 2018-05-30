@@ -1,11 +1,11 @@
 package io.tabletoptools.hawthorne.modules.formhooks;
 
 public class DiscordUser {
-    String id;
-    String username;
-    String discriminator;
-    String avatar;
-    String email;
+    private String id;
+    private String username;
+    private String discriminator;
+    private String avatar;
+    private String email;
 
     public String getId() {
         return id;

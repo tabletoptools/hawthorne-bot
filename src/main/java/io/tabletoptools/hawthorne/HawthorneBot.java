@@ -100,7 +100,7 @@ public class HawthorneBot {
             instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
             Runtime.getRuntime().addShutdownHook(new Thread(HawthorneBot::performShutdown));
 
-            scheduledExecutor.scheduleAtFixedRate(HawthorneBot::update, 0, 5, TimeUnit.MINUTES);
+            scheduledExecutor.scheduleAtFixedRate(HawthorneBot::update, 30, 30, TimeUnit.MINUTES);
 
             synchronized (shutdownNotifier) {
                 while(!shutdown) {
@@ -203,7 +203,7 @@ public class HawthorneBot {
 
     private static void update() {
         try {
-            Loggers.APPLICATION_LOG.info("Updating loot generator items.");
+            Loggers.APPLICATION_LOG.debug("Updating loot generator items.");
             ItemService.instance().update();
         } catch (NotAuthenticatedException ex) {
             Loggers.APPLICATION_LOG.error("Exception: ", ex);

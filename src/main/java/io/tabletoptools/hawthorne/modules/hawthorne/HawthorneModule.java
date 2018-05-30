@@ -34,17 +34,17 @@ public class HawthorneModule extends Module {
 
     @Override
     public void onUnload() {
-
+        //This module should never be unloaded.
     }
 
     @Override
     public void onEnable() {
-
+        //TODO: Enable module
     }
 
     @Override
     public void onDisable() {
-
+        //TODO: Disable module
     }
 
 }
