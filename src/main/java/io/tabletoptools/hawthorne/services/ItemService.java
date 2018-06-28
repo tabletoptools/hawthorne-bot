@@ -28,10 +28,7 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
-import io.tabletoptools.hawthorne.model.Category;
-import io.tabletoptools.hawthorne.model.Item;
-import io.tabletoptools.hawthorne.model.Tier;
-import io.tabletoptools.hawthorne.model.WeightedTierCategoryPair;
+import io.tabletoptools.hawthorne.model.*;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.io.File;
@@ -90,7 +87,7 @@ public class ItemService {
         }
     }
 
-    private final String itemSheetId = "1m6Qb1AIBRNNNBukJd_7Tzciw7LDZs8WurgWQbYaTWLA";
+    private final String itemSheetId = "1vj5ASpndXA4RFNV0L-ib7uvltLjH-k4FrqQWJG2uABM";
 
     public void load() throws NotAuthenticatedException {
         Loggers.APPLICATION_LOG.debug("Loading Item List");
@@ -135,6 +132,7 @@ public class ItemService {
                     try {
                         String name = row.get(0).toString();
 
+
                         Integer numericTier = Integer.parseInt(row.get(1).toString());
                         Tier tier = Tier.valueOf("T" + numericTier);
 
@@ -143,10 +141,26 @@ public class ItemService {
                         String categoryAsString = row.get(3).toString();
                         Category category = Category.fromString(categoryAsString);
 
-                        Map<Integer, Integer> amountPerLevel = new HashMap<>();
+                        Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier.getTier(), name);
+
+                        Map<Integer, Amount> amountPerLevel = new HashMap<>();
                         for (int i = 4; i < 22; i++) {
-                            int amount = row.get(i) != null ? Integer.parseInt(String.valueOf(row.get(i))) : 1;
-                            amountPerLevel.put(i - 1, amount);
+                            if(row.get(i) == null) {
+                                amountPerLevel.put(i-1, new StaticAmount(1L));
+                            }
+                            else {
+                                try {
+                                    amountPerLevel.put(i-1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
+                                }
+                                catch(NumberFormatException ex) {
+                                    try {
+                                        amountPerLevel.put(i - 1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
+                                    } catch (Exception ex2) {
+                                        Loggers.APPLICATION_LOG.warn("Error while getting amount for level and item. Setting default (1): ", ex2);
+                                        amountPerLevel.put(i - 1, new StaticAmount(1L));
+                                    }
+                                }
+                            }
                         }
 
                         Item item = new Item(name, tier, weight, category, amountPerLevel);

@@ -16,7 +16,6 @@ package io.tabletoptools.hawthorne.services;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.TextChannel;

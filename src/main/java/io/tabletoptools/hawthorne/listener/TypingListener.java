@@ -15,7 +15,6 @@
 package io.tabletoptools.hawthorne.listener;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.user.UserTypingEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;

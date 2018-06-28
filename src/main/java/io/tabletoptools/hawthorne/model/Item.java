@@ -24,9 +24,9 @@ public class Item implements WeightedObject {
     private BigDecimal weight;
     private Category category;
     private BigDecimal chance;
-    private Map<Integer, Integer> amountPerLevel = new HashMap<>();
+    private Map<Integer, Amount> amountPerLevel = new HashMap<>();
 
-    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Integer> amountPerLevel) {
+    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Amount> amountPerLevel) {
         this.name = name;
         this.tier = tier;
         this.weight = weight;
@@ -34,7 +34,7 @@ public class Item implements WeightedObject {
         this.amountPerLevel = amountPerLevel;
     }
 
-    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Integer> amountPerLevel, BigDecimal chance) {
+    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Amount> amountPerLevel, BigDecimal chance) {
         this.name = name;
         this.tier = tier;
         this.weight = weight;
@@ -63,11 +63,11 @@ public class Item implements WeightedObject {
         return chance;
     }
 
-    public Map<Integer, Integer> getAmountPerLevel() {
+    public Map<Integer, Amount> getAmountPerLevel() {
         return amountPerLevel;
     }
 
-    public void setAmountPerLevel(Map<Integer, Integer> amountPerLevel) {
+    public void setAmountPerLevel(Map<Integer, Amount> amountPerLevel) {
         this.amountPerLevel = amountPerLevel;
     }
 

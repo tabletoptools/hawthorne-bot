@@ -19,11 +19,7 @@ import io.tabletoptools.discord.modulizer.Modulizer;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
-import java.util.Date;
-
 public class MessageListener extends ListenerAdapter {
-
-    private static Date lastAvalonKitten = new Date(new Date().getTime() - (1000L * 300L));
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -31,36 +27,6 @@ public class MessageListener extends ListenerAdapter {
         if(event.getAuthor().getIdLong() == 135468266695950336L) {
             Modulizer.instance().process(event);
         }
-        //4valon Kitt3n B00T
-
-        //Things to check for:
-        //Is user Avalon
-        //Does message contain Kitten?
-        //Does message contain other creature?
-        //Can bot talk
-
-        /*if(event.getAuthor().getIdLong() == 210834183356940291L) {
-            if(event.getMessage().getContentRaw().toLowerCase().contains("kitten")) {
-                if(lastAvalonKitten.getTime() < (new Date().getTime() - (1000L * 300L))) {
-                    lastAvalonKitten = new Date(new Date().getTime());
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Thread.sleep(2000);
-                                event.getChannel().sendTyping().queue();
-                                Thread.sleep(5000);
-                                event.getChannel().sendMessage("Avalon, don't call things kittens.").queue();
-                            }
-                            catch(InterruptedException ex) {
-                                Loggers.APPLICATION_LOG.error("Got interrupted trying to scold Avalon. REEEEE");
-                            }
-                        }
-                    }).run();
-                }
-            }
-        }*/
-
     }
 
 }

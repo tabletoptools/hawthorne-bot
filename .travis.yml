@@ -15,22 +15,20 @@ before_install:
   if [ ! -d $HOME/google-cloud-sdk ]; then
     curl https://sdk.cloud.google.com | bash;
   fi
-- |
-  if [ -v $TRAVIS_TAG ]; then
-    TRAVIS_TAG="1.0-SNAPSHOT";
-  fi
+- BUILD_VERSION="1.7.1"
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file deploy-key.json
 before_deploy:
-- docker build -p 1337:4567 --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg TRAVIS_TAG=$TRAVIS_TAG
-  -t us.gcr.io/hawthorne-197812/hawthorne-bot:$TRAVIS_TAG .
+- curl https://download.sqreen.io/java/sqreen-latest-all.jar -o sqreen.jar
+- docker build --build-arg BOT_TOKEN=$BOT_TOKEN --build-arg BUILD_VERSION=$BUILD_VERSION
+  --build-arg TYPEFORM_TOKEN=$TYPEFORM_TOKEN --build-arg SQREEN_TOKEN=$SQREEN_TOKEN
+  -t us.gcr.io/hawthorne-197812/hawthorne-bot:$BUILD_VERSION .
 deploy:
   provider: script
-  script: bash docker_push.sh
+  script: gcloud docker -- push us.gcr.io/hawthorne-197812/hawthorne-bot:${BUILD_VERSION}
   skip_cleanup: true
   on:
     branch: master
-    condition: $TRAVIS_TAG != "1.0-SNAPSHOT"
 env:
 - PATH=$PATH:$HOME/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1

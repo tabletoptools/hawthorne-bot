@@ -15,7 +15,6 @@
 package io.tabletoptools.hawthorne.listener;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
-import io.tabletoptools.hawthorne.services.HawthorneLogService;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;

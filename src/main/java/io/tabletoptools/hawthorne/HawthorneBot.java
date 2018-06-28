@@ -1,6 +1,9 @@
 package io.tabletoptools.hawthorne;
 
 import ch.hive.discord.bots.commands.CommandBase;
+import com.google.gson.Gson;
+import com.mashape.unirest.http.ObjectMapper;
+import com.mashape.unirest.http.Unirest;
 import io.tabletoptools.discord.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.listener.GuildMemberListener;
@@ -8,12 +11,9 @@ import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
 import io.tabletoptools.hawthorne.listener.MessageListener;
 import io.tabletoptools.hawthorne.listener.ReactionListener;
 import io.tabletoptools.hawthorne.model.RollSettings;
-import io.tabletoptools.hawthorne.modules.api.APIModule;
 import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
-import io.tabletoptools.hawthorne.modules.formhooks.FormModule;
 import io.tabletoptools.hawthorne.modules.hawthorne.HawthorneModule;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import io.tabletoptools.hawthorne.modules.logging.LoggingModule;
 import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
@@ -26,22 +26,27 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class HawthorneBot {
 
     public static final String BOT_OWNER_ICON = "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png";
-    private static final String BOT_PREFIX = "/h";
-    public final String FOOTER = "Hawthorne Bot";
+    private static final String BOT_PREFIX = Config.instance().getString("prefix");
+    public final String FOOTER = Config.instance().getString("footer");
     private static HawthorneBot bot;
     private JDA client;
-    private static Thread updateThread;
     private HashMap<Long, RollSettings> rollMessages = new HashMap<>();
     private String token;
     private String typeformToken;
     public final Color HAWTHORNE_PURPLE = new Color(250, 0, 255);
+    private static final Object shutdownNotifier = new Object();
     private static boolean shutdown = false;
     private static boolean isShutdown = false;
     private static boolean restart = false;
+
+    private static final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public static HawthorneBot instance() {
         if (bot == null) {
@@ -58,61 +63,48 @@ public class HawthorneBot {
                 return;
             }
 
-            if(!System.getenv().containsKey("TYPEFORM_TOKEN")) {
+            if (!System.getenv().containsKey("TYPEFORM_TOKEN")) {
                 Loggers.APPLICATION_LOG.error("No typeform token submitted.");
             }
 
             String token = null;
 
-            if(System.getenv().containsKey("BOT_TOKEN")) {
+            if (System.getenv().containsKey("BOT_TOKEN")) {
                 token = System.getenv("BOT_TOKEN");
             }
-            if(args.length != 0) {
+            if (args.length != 0) {
                 token = args[0];
             }
 
-            instance().start(token);
-            instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
-            Runtime.getRuntime().addShutdownHook(new Thread() {
+            Unirest.setObjectMapper(new ObjectMapper() {
+                private Gson gson = new Gson();
 
-                @Override
-                public void run() {
-                    performShutdown();
+                public <T> T readValue(String s, Class<T> aClass) {
+                    try {
+                        return gson.fromJson(s, aClass);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
-            });
-
-            updateThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
+                public String writeValue(Object o) {
                     try {
-                        while (!HawthorneBot.shutdown) {
-                            long updateCounter = 0;
-                            while (!HawthorneBot.shutdown && updateCounter < 300) {
-                                updateCounter++;
-                                Thread.sleep(1000);
-                            }
-                            try {
-                                if (!HawthorneBot.shutdown) ItemService.instance().update();
-                            }
-                            catch (NotAuthenticatedException ex) {
-
-                            }
-                        }
-                    } catch (InterruptedException ex) {
-
+                        return gson.toJson(o);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             });
 
-            updateThread.start();
+            instance().start(token);
+            instance().setTypeformToken(System.getenv("TYPEFORM_TOKEN"));
+            Runtime.getRuntime().addShutdownHook(new Thread(HawthorneBot::performShutdown));
 
-            while (!shutdown) {
+            scheduledExecutor.scheduleAtFixedRate(HawthorneBot::update, 30, 30, TimeUnit.MINUTES);
 
-                int x = 0;
-                while (!shutdown && x < 30) {
-                    Thread.sleep(1000);
-                    x++;
+            synchronized (shutdownNotifier) {
+                while(!shutdown) {
+                    shutdownNotifier.wait();
                 }
             }
         } catch (Exception ex) {
@@ -122,15 +114,15 @@ public class HawthorneBot {
         }
     }
 
-    public void start(String token) throws RateLimitedException, LoginException, InterruptedException {
+    private void start(String token) throws RateLimitedException, LoginException, InterruptedException {
 
         this.token = token;
+
 
         Loggers.APPLICATION_LOG.info("Loading data for the first time.");
         try {
             ItemService.instance().load();
-        }
-        catch(NotAuthenticatedException ex) {
+        } catch (NotAuthenticatedException ex) {
             Loggers.APPLICATION_LOG.info("Not authenticated. Let's fix that, shall we?");
         }
         Loggers.APPLICATION_LOG.info("Starting command handler");
@@ -159,7 +151,7 @@ public class HawthorneBot {
         return typeformToken;
     }
 
-    public void setTypeformToken(String typeformToken) {
+    private void setTypeformToken(String typeformToken) {
         this.typeformToken = typeformToken;
     }
 
@@ -181,10 +173,9 @@ public class HawthorneBot {
 
     private static void performShutdown() {
         if (isShutdown) return;
+        scheduledExecutor.shutdown();
         Loggers.APPLICATION_LOG.info("Removing all pending rolls.");
-        instance().getRollMessages().forEach((id, settings) -> {
-            settings.getMessage().delete().queue();
-        });
+        instance().getRollMessages().forEach((id, settings) -> settings.getMessage().delete().queue());
         instance().getRollMessages().clear();
         Loggers.APPLICATION_LOG.info("Shutting down client.");
 
@@ -204,7 +195,19 @@ public class HawthorneBot {
     }
 
     public void shutdown() {
-        shutdown = true;
+        synchronized (shutdownNotifier) {
+            shutdown = true;
+            shutdownNotifier.notify();
+        }
+    }
+
+    private static void update() {
+        try {
+            Loggers.APPLICATION_LOG.debug("Updating loot generator items.");
+            ItemService.instance().update();
+        } catch (NotAuthenticatedException ex) {
+            Loggers.APPLICATION_LOG.error("Exception: ", ex);
+        }
     }
 
     public Boolean hasSettings(Long messageId) {

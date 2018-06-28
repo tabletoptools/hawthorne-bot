@@ -15,17 +15,13 @@
 package io.tabletoptools.hawthorne.constraint;
 
 import ch.hive.discord.bots.commands.ConstraintCheck;
-import io.tabletoptools.hawthorne.HawthorneBot;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class TesterConstraint extends ConstraintCheck {
 
     @Override
     public boolean check(MessageReceivedEvent event) {
-        if(event.getMember().getRoles().stream().anyMatch(role -> "Hawthorne Tester".equals(role.getName()))) {
-            return true;
-        }
-        return false;
+        return event.getMember().getRoles().stream().anyMatch(role -> "Hawthorne Tester".equals(role.getName()));
     }
 
     @Override

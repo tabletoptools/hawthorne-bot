@@ -4,7 +4,7 @@ import ch.hive.discord.bots.commands.Command;
 import ch.hive.discord.bots.commands.Constraint;
 import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
-import io.tabletoptools.hawthorne.*;
+import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
@@ -34,14 +34,14 @@ public class LootCommands {
 
     @Command("genloot")
     @Description("Process loot! :D")
-    @Constraint(value = {
+    /*@Constraint(value = {
             BotOwnerConstraint.class,
             HawthorneHeadOfStaffConstraint.class,
             HawthorneAdminConstraint.class,
             HawthorneDMConstraint.class,
             HawthorneTrialDMConstraint.class,
             TesterConstraint.class
-    }, enforceAll = false)
+    }, enforceAll = false)*/
     public static void loot(MessageReceivedEvent event, @Parameter("Player Count") Integer playerCount, @Parameter("APL") String aplAsString) {
 
         event.getMessage().delete().queue();
@@ -293,7 +293,7 @@ public class LootCommands {
 
         event.getMessage().delete().queue();
         boolean success = false;
-        if ("respectItemCount".toLowerCase().equals(setting.toLowerCase())) {
+        if ("respectItemCount".equalsIgnoreCase(setting)) {
             Boolean respectItemCount = Boolean.valueOf(value);
             RandomItemService.instance().setRespectItemCount(respectItemCount);
             success = true;

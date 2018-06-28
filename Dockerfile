@@ -1,6 +1,13 @@
 FROM openjdk:8-jre
 ARG BOT_TOKEN
-ARG TRAVIS_TAG
+ARG BUILD_VERSION
+ARG TYPEFORM_TOKEN
 ENV BOT_TOKEN=$BOT_TOKEN
-ADD target/hawthorne-bot-${TRAVIS_TAG}-jar-with-dependencies.jar hawthorne-bot.jar
+ENV TYPEFORM_TOKEN=$TYPEFORM_TOKEN
+ENV GOOGLE_APPLICATION_CREDENTIALS="credentials.json"
+ENV env="production"
+ENV SQREEN_TOKEN=$SQREEN_TOKEN
+COPY target/hawthorne-bot-${BUILD_VERSION}-jar-with-dependencies.jar hawthorne-bot.jar
+COPY sqreen.jar sqreen.jar
+COPY credentials.json credentials.json
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/hawthorne-bot.jar"]

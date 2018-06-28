@@ -14,13 +14,13 @@
  */
 package io.tabletoptools.hawthorne.services;
 
+import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.model.Category;
 import io.tabletoptools.hawthorne.model.Item;
-import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import io.tabletoptools.hawthorne.exception.NoItemFoundException;
 import io.tabletoptools.hawthorne.model.Tier;
 import io.tabletoptools.hawthorne.model.WeightedTierCategoryPair;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -47,6 +47,7 @@ public class RandomItemService {
         List<WeightedTierCategoryPair> bracket = ItemService.instance().getLevelBracket(APL);
         WeightedTierCategoryPair tierCategoryPair = getRandomTierCategoryPair(bracket);
 
+        assert tierCategoryPair != null;
         return getRandomItemFromList(tierCategoryPair, ItemService.instance().getItemList(tierCategoryPair.getTier(), tierCategoryPair.getCategory()));
 
     }
@@ -108,6 +109,7 @@ public class RandomItemService {
             }
         }
 
+        assert containingPair != null;
         List<Item> items = ItemService.instance().getItemList(containingPair.getTier(), containingPair.getCategory());
 
         if (containingPair.getWeight().compareTo(BigDecimal.valueOf(0)) == 0) return BigDecimal.valueOf(0);
@@ -143,6 +145,7 @@ public class RandomItemService {
                 containingPair = pair;
             }
         }
+        assert containingPair != null;
         List<Item> items = ItemService.instance().getItemList(containingPair.getTier(), containingPair.getCategory());
 
         if (containingPair.getWeight().compareTo(BigDecimal.valueOf(0)) == 0) return BigDecimal.valueOf(0);

@@ -5,13 +5,14 @@ import ch.hive.discord.bots.commands.Constraint;
 import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
-import io.tabletoptools.hawthorne.constraint.BotOwnerConstraint;
-import net.dv8tion.jda.core.OnlineStatus;
-import net.dv8tion.jda.core.entities.Game;
+import io.tabletoptools.hawthorne.constraint.*;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.jexl3.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GeneralCommands {
 
@@ -76,4 +77,46 @@ public class GeneralCommands {
                 + " sessions. I'll notify you if anything interesting pops up. Enable auto-session-signup with `dev!autosignup true`")
                 .queue();
     }
+
+    @Command("adventurer")
+    @Constraint(value = {
+            HawthorneHeadOfStaffConstraint.class,
+            HawthorneAdminConstraint.class,
+            BotOwnerConstraint.class,
+            TesterConstraint.class,
+            PRConstraint.class
+    }, enforceAll = false)
+    public static void adventurer(MessageReceivedEvent event, @Parameter("args") String... args) {
+
+        Member member = event.getMessage().getMentionedMembers().get(0);
+
+        event.getMessage().delete().queue();
+        event.getGuild().getController().removeSingleRoleFromMember(member, event.getGuild().getRoleById(445939304695595028L)).queue();
+        event.getGuild().getController().addSingleRoleToMember(member, event.getGuild().getRoleById(343393950079385610L)).queue();
+        event.getChannel().sendMessage("Made " + member.getEffectiveName() + " an adventurer.").queue();
+
+    }
+
+    @Command("dm")
+    @Constraint(value = {
+            HawthorneHeadOfStaffConstraint.class,
+            HawthorneAdminConstraint.class,
+            BotOwnerConstraint.class,
+            TesterConstraint.class,
+            PRConstraint.class
+    }, enforceAll = false)
+    public static void dm(MessageReceivedEvent event, @Parameter("args") String... args) {
+
+        Member member = event.getMessage().getMentionedMembers().get(0);
+        event.getMessage().delete().queue();
+
+        List<Role> roles = new ArrayList<>();
+
+        roles.add(event.getGuild().getRoleById(343394051938320388L));
+        roles.add(event.getGuild().getRoleById(378954937297666052L));
+        roles.add(event.getGuild().getRoleById(418756942941650955L));
+        event.getGuild().getController().addRolesToMember(member, roles).queue();
+        event.getChannel().sendMessage("Made " + member.getEffectiveName() + " a trial DM.").queue();
+    }
+
 }

@@ -16,7 +16,6 @@ package io.tabletoptools.hawthorne.modules.coffee;
 
 import io.tabletoptools.discord.modulizer.CommandClass;
 import io.tabletoptools.discord.modulizer.annotation.Command;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CoffeeCommands extends CommandClass {

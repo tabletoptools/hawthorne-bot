@@ -6,63 +6,30 @@
             <pattern>%d{dd.MM.yyyy - HH:mm:ss.SSS, GMT+1:00} %-5level %logger{0} - %msg%n</pattern>
         </encoder>
     </appender>
+    <!--Application Log-->
+    <appender name="hawthorne-bot" class="com.google.cloud.logging.logback.LoggingAppender">
+        <log>hawthorne-bot</log>
+        <flushLevel>INFO</flushLevel>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="hawthorne-bot"/>
     </root>
 
-    <!--Application Log-->
-    <appender name="ref/hawthorne/bot/application" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/bot/application</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
-    <logger name="hawthorne/bot/application" level="INFO">
-        <appender-ref ref="ref/hawthorne/bot/application" />
+    <logger name="hawthorne-bot" level="INFO">
     </logger>
-
-    <!--Message Received Log-->
-    <appender name="ref/hawthorne/messages/received" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/messages/received</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
-    <logger name="hawthorne/messages/received" level="INFO">
-        <appender-ref ref="ref/hawthorne/messages/received" />
-    </logger>
-
-    <!--Message Edit Log-->
-    <appender name="ref/hawthorne/messages/edit" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/messages/edit</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
-    <logger name="hawthorne/messages/edit" level="INFO">
-        <appender-ref ref="ref/hawthorne/messages/edit" />
-    </logger>
-
-    <!--Message Delete Log-->
-    <appender name="ref/hawthorne/messages/delete" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/messages/delete</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
-    <logger name="hawthorne/messages/delete" level="INFO">
-        <appender-ref ref="ref/hawthorne/messages/delete" />
-    </logger>
-
-    <appender name="ref/jda" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>hawthorne/bot/jda</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
     <logger name="JDA" level="INFO">
-        <appender-ref ref="ref/jda" />
     </logger>
     <logger name="WebSocketClient" level="INFO">
-        <appender-ref ref="ref/jda" />
     </logger>
-
-    <appender name="ref/modulizer" class="com.google.cloud.logging.logback.LoggingAppender">
-        <log>modulizer</log>
-        <flushLevel>ERROR</flushLevel>
-    </appender>
     <logger name="modulizer" level="INFO">
-        <appender-ref ref="ref/modulizer" />
+    </logger>
+    <logger name="io.grpc" level="INFO">
+    </logger>
+    <logger name="AbstractLifeCycle" level="INFO">
+    </logger>
+    <logger name="CipherSuiteConverter" level="INFO">
     </logger>
 
 </configuration>
