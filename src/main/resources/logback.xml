@@ -10,6 +10,9 @@
     <appender name="hawthorne-bot" class="com.google.cloud.logging.logback.LoggingAppender">
         <log>hawthorne-bot</log>
         <flushLevel>INFO</flushLevel>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
     </appender>
 
     <root level="INFO">

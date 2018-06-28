@@ -11,16 +11,19 @@ import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
 import io.tabletoptools.hawthorne.listener.MessageListener;
 import io.tabletoptools.hawthorne.listener.ReactionListener;
 import io.tabletoptools.hawthorne.model.RollSettings;
+import io.tabletoptools.hawthorne.model.Statistics;
 import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
 import io.tabletoptools.hawthorne.modules.hawthorne.HawthorneModule;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
+import io.tabletoptools.hawthorne.resources.TradeCommands;
 import io.tabletoptools.hawthorne.services.ItemService;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -45,6 +48,8 @@ public class HawthorneBot {
     private static boolean shutdown = false;
     private static boolean isShutdown = false;
     private static boolean restart = false;
+
+    private static Message statusMessage;
 
     private static final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
@@ -101,6 +106,7 @@ public class HawthorneBot {
             Runtime.getRuntime().addShutdownHook(new Thread(HawthorneBot::performShutdown));
 
             scheduledExecutor.scheduleAtFixedRate(HawthorneBot::update, 30, 30, TimeUnit.MINUTES);
+            scheduledExecutor.scheduleAtFixedRate(HawthorneBot::saveStatistics, 60, 60, TimeUnit.MINUTES);
 
             synchronized (shutdownNotifier) {
                 while(!shutdown) {
@@ -121,7 +127,7 @@ public class HawthorneBot {
 
         Loggers.APPLICATION_LOG.info("Loading data for the first time.");
         try {
-            ItemService.instance().load();
+            ItemService.instance();
         } catch (NotAuthenticatedException ex) {
             Loggers.APPLICATION_LOG.info("Not authenticated. Let's fix that, shall we?");
         }
@@ -130,7 +136,8 @@ public class HawthorneBot {
                 .setColor(HAWTHORNE_PURPLE)
                 .registerCommandClass(GeneralCommands.class)
                 .registerCommandClass(GuideCommands.class)
-                .registerCommandClass(LootCommands.class);
+                .registerCommandClass(LootCommands.class)
+                .registerCommandClass(TradeCommands.class);
 
         Modulizer.instance().loadModule(new CoffeeModule());
         //Modulizer.instance().loadModule(new APIModule());
@@ -228,6 +235,26 @@ public class HawthorneBot {
 
     public HashMap<Long, RollSettings> getRollMessages() {
         return rollMessages;
+    }
+
+    public static void saveStatistics() {
+        Statistics statistics = HawthorneLogListener.getStatistics();
+        HawthorneLogListener.resetStatistics();
+        saveStatistics(statistics);
+    }
+
+    public static void saveStatistics(Statistics statistics) {
+        if(statusMessage == null) {
+            statusMessage = HawthorneBot.instance().getClient().getTextChannelById(456409530851655680L).getMessageById(456409584056139777L).complete();
+        }
+        Gson gson = new Gson();
+
+        Statistics oldStatistics = gson.fromJson(statusMessage.getContentRaw().substring(8).split("}")[0]+"}", Statistics.class);
+        statistics.setEventCount(oldStatistics.getEventCount()+statistics.getEventCount());
+        statistics.setMessageCount(oldStatistics.getMessageCount()+statistics.getMessageCount());
+        statistics.setPresenceUpdateCount(oldStatistics.getPresenceUpdateCount()+statistics.getPresenceUpdateCount());
+        statistics.setTypingStartCount(oldStatistics.getTypingStartCount()+statistics.getTypingStartCount());
+        statusMessage = statusMessage.editMessage("```json\n"+gson.toJson(statistics)+"\n```").complete();
     }
 
 }

@@ -14,21 +14,74 @@
  */
 package io.tabletoptools.hawthorne.model;
 
-public enum Tier {
-    T1("T1"),
-    T2("T2"),
-    T3("T3"),
-    T4("T4"),
-    T5("T5"),
-    T6("T6");
+import javafx.collections.transformation.SortedList;
 
-    private final String tier;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-    Tier(String tier) {
-        this.tier = tier;
+public class Tier implements WeightedObject, Comparable {
+
+    private String name;
+    private BigDecimal weight;
+    private List<Category> categories = new ArrayList<>();
+
+    public Tier(String name) {
+        this.name = name;
     }
 
-    public String getTier() {
-        return this.tier;
+    public Tier(String name, BigDecimal weight) {
+        this.name = name;
+        this.weight = weight;
+    }
+
+    @Override
+    public BigDecimal getWeight() {
+        return this.weight;
+    }
+
+    public Tier withWeight(BigDecimal weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public Tier withCategory(Category category) {
+        this.categories.add(category);
+        return this;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Tier ot = (Tier)o;
+        if(this.equals(o)) return 0;
+        if(this.getName().equals(ot.getName())) return 0;
+        else return Integer.parseInt(this.getName().substring(1)) - Integer.parseInt(ot.getName().substring(1));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tier)) return false;
+        Tier tier = (Tier) o;
+        return Objects.equals(getName(), tier.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 }

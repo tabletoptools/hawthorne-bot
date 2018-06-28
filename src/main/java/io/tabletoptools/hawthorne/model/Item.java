@@ -15,31 +15,26 @@
 package io.tabletoptools.hawthorne.model;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Item implements WeightedObject {
     private String name;
-    private Tier tier;
+    private String tierName;
     private BigDecimal weight;
-    private Category category;
-    private BigDecimal chance;
-    private Map<Integer, Amount> amountPerLevel = new HashMap<>();
+    private String categoryName;
+    private Map<Integer, Amount> amountPerLevel;
 
-    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Amount> amountPerLevel) {
+    public Item(String name, String tierName, BigDecimal weight, String categoryName, Map<Integer, Amount> amountPerLevel) {
         this.name = name;
-        this.tier = tier;
+        this.tierName = tierName;
         this.weight = weight;
-        this.category = category;
+        this.categoryName = categoryName;
         this.amountPerLevel = amountPerLevel;
     }
 
-    public Item(String name, Tier tier, BigDecimal weight, Category category, Map<Integer, Amount> amountPerLevel, BigDecimal chance) {
+    public Item(String name, BigDecimal weight, Map<Integer, Amount> amountPerLevel) {
         this.name = name;
-        this.tier = tier;
         this.weight = weight;
-        this.category = category;
-        this.chance = chance;
         this.amountPerLevel = amountPerLevel;
     }
 
@@ -47,20 +42,16 @@ public class Item implements WeightedObject {
         return name;
     }
 
-    public Tier getTier() {
-        return tier;
+    public String getTierName() {
+        return tierName;
     }
 
     public BigDecimal getWeight() {
         return weight;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public BigDecimal getChance() {
-        return chance;
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public Map<Integer, Amount> getAmountPerLevel() {
@@ -71,7 +62,8 @@ public class Item implements WeightedObject {
         this.amountPerLevel = amountPerLevel;
     }
 
-    public Item withChance(BigDecimal chance) {
-        return new Item(this.name, this.tier, this.weight, this.category, this.amountPerLevel, chance);
+    @Override
+    public String toString() {
+        return name;
     }
 }

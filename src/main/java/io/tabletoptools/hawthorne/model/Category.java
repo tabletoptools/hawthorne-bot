@@ -2,28 +2,37 @@ package io.tabletoptools.hawthorne.model;
 
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
-public enum Category {
-    Consumable,
-    Combat,
-    NonCombat,
-    Summoning,
-    GameChanging,
-    NYI;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-    public static Category fromString(String value) {
-        try {
-            return Category.valueOf(value);
-        }
-        catch(IllegalArgumentException ex) {
-            switch (value) {
-                case "Non-Combat":
-                    return Category.NonCombat;
-                case "Game-Changing":
-                    return Category.GameChanging;
-                default:
-                    Loggers.APPLICATION_LOG.warn("Caught unknown Category: <{}>", value);
-                    return Category.NYI;
-            }
-        }
+public class Category implements WeightedObject {
+
+    private BigDecimal weight;
+    private String name;
+    private List<Item> items = new ArrayList<>();
+
+    public Category(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public BigDecimal getWeight() {
+        return this.weight;
+    }
+
+    public Category withWeight(BigDecimal weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public Category withItem(Item item) {
+        this.items.add(item);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

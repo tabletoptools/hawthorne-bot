@@ -1,11 +1,11 @@
 /*
  * $Id: HttpFilter 3988 2017-06-21 13:47:09Z cfi $
  * Created on 03.02.18 00:37
- * 
+ *
  * Copyright (c) 2017 by bluesky IT-Solutions AG,
  * Kaspar-Pfeiffer-Strasse 4, 4142 Muenchenstein, Switzerland.
  * All rights reserved.
- * 
+ *
  * This software is the confidential and proprietary information
  * of bluesky IT-Solutions AG ("Confidential Information").  You
  * shall not disclose such Confidential Information and shall use
@@ -37,6 +37,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ItemService {
 
@@ -47,20 +48,16 @@ public class ItemService {
     private static HttpTransport HTTP_TRANSPORT;
     private static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY);
 
-
     private List<Item> items = new ArrayList<>();
-    private Map<String, List<Item>> tierSortedItemLists = new HashMap<>();
-    private Map<Integer, List<WeightedTierCategoryPair>> levelBrackets = new HashMap<>();
-    private Date lastUpdated;
+    private Map<Integer, Set<Tier>> tiersPerLevel = new HashMap<>();
     private Boolean isAuthenticated = false;
     private GoogleAuthorizationCodeFlow flow;
 
     private GoogleAuthorizationCodeFlow getFlow() {
-        if(this.flow == null) {
+        if (this.flow == null) {
             try {
                 this.flow = getGoogleAuthorizationCodeFlow();
-            }
-            catch(IOException ex) {
+            } catch (IOException ex) {
                 Loggers.APPLICATION_LOG.error("ERROR getting Google Authorization Code Flow!");
                 return null;
             }
@@ -90,36 +87,19 @@ public class ItemService {
     private final String itemSheetId = "1vj5ASpndXA4RFNV0L-ib7uvltLjH-k4FrqQWJG2uABM";
 
     public void load() throws NotAuthenticatedException {
-        Loggers.APPLICATION_LOG.debug("Loading Item List");
-        loadItemList();
-        loadTierSortedItemLists();
-        Loggers.APPLICATION_LOG.debug("Loading Level Brackets");
-        loadLevelBrackets();
-        this.lastUpdated = new Date();
+        Loggers.APPLICATION_LOG.info("Loading Tiers...");
+        loadTiers();
+        Loggers.APPLICATION_LOG.info("Loading Categories...");
+        loadCategories();
+        Loggers.APPLICATION_LOG.info("Loading Items...");
+        loadItems();
     }
 
     public void update() throws NotAuthenticatedException {
         this.load();
     }
 
-    private void loadTierSortedItemLists() {
-
-        Map<String, List<Item>> tierSortedItemList = new HashMap<>();
-
-        for (Item item : items) {
-            String tierKey = item.getTier() + "-" + item.getCategory();
-            if (tierSortedItemList.containsKey(tierKey)) {
-                tierSortedItemList.get(tierKey).add(item);
-            } else {
-                List<Item> itemList = new ArrayList<>();
-                itemList.add(item);
-                tierSortedItemList.put(tierKey, itemList);
-            }
-        }
-        this.tierSortedItemLists = tierSortedItemList;
-    }
-
-    private void loadItemList() throws NotAuthenticatedException {
+    private void loadItems() throws NotAuthenticatedException {
         List<Item> items = new ArrayList<>();
         try {
             Sheets service = getSheetsService();
@@ -130,29 +110,25 @@ public class ItemService {
             } else {
                 values.forEach(row -> {
                     try {
+
                         String name = row.get(0).toString();
 
-
-                        Integer numericTier = Integer.parseInt(row.get(1).toString());
-                        Tier tier = Tier.valueOf("T" + numericTier);
+                        String tier = "T" + row.get(1).toString();
 
                         BigDecimal weight = new BigDecimal(row.get(2) == null ? "0" : row.get(2).toString());
 
-                        String categoryAsString = row.get(3).toString();
-                        Category category = Category.fromString(categoryAsString);
+                        String category = row.get(3).toString();
 
-                        Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier.getTier(), name);
+                        Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier, name);
 
                         Map<Integer, Amount> amountPerLevel = new HashMap<>();
                         for (int i = 4; i < 22; i++) {
-                            if(row.get(i) == null) {
-                                amountPerLevel.put(i-1, new StaticAmount(1L));
-                            }
-                            else {
+                            if (row.get(i) == null) {
+                                amountPerLevel.put(i - 1, new StaticAmount(1L));
+                            } else {
                                 try {
-                                    amountPerLevel.put(i-1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
-                                }
-                                catch(NumberFormatException ex) {
+                                    amountPerLevel.put(i - 1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
+                                } catch (NumberFormatException ex) {
                                     try {
                                         amountPerLevel.put(i - 1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
                                     } catch (Exception ex2) {
@@ -177,43 +153,81 @@ public class ItemService {
         this.items = items;
     }
 
-    public void loadLevelBrackets() throws NotAuthenticatedException {
-        Map<Integer, List<WeightedTierCategoryPair>> levelBrackets = new HashMap<>();
+    private void loadTiers() throws NotAuthenticatedException {
+        Map<Integer, Set<Tier>> tiersPerLevel = new HashMap<>();
+        try {
+            Sheets service = getSheetsService();
+            ValueRange response = service.spreadsheets().values().get(itemSheetId, "Tiers!A2:S").execute();
+            List<List<Object>> values = response.getValues();
+            if (values == null || values.size() == 0) Loggers.APPLICATION_LOG.error("No data found for supplied table.");
+            else {
+                values.forEach(row -> {
+                    if (!isNullOrEmpty(row.get(0))) {
+                        try {
+                            for (int i = 3; i <= 20; i++) {
+                                try {
+                                    //Base Tier
+                                    Tier tier = new Tier(row.get(0).toString())
+                                            .withWeight(new BigDecimal(isNullOrEmpty(row.get(i - 2)) ? "0" : row.get(i - 2).toString()));
+                                    if (!tiersPerLevel.containsKey(i)) {
+                                        tiersPerLevel.put(i, new TreeSet<>());
+                                    }
+                                    tiersPerLevel.get(i).add(tier);
+                                } catch (IllegalArgumentException ex) {
+                                    Loggers.APPLICATION_LOG.debug("Skipping a row due to an Illegal Argument Exception.");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            Loggers.APPLICATION_LOG.warn("Exception: ", ex);
+                        }
+                    } else Loggers.APPLICATION_LOG.info("Skipping a row, not a tier.");
+                });
+            }
+        } catch (IOException ex) {
+            Loggers.APPLICATION_LOG.warn("IOException", ex);
+        }
+        this.tiersPerLevel = tiersPerLevel;
+    }
+
+    private void loadCategories() throws NotAuthenticatedException {
         try {
             Sheets service = getSheetsService();
             ValueRange response = service.spreadsheets().values().get(itemSheetId, "LevelBrackets!A2:T").execute();
             List<List<Object>> values = response.getValues();
-            if (values == null || values.size() == 0) {
-                Loggers.APPLICATION_LOG.error("No data found for supplied table.");
-            } else {
+            if (values == null || values.size() == 0) Loggers.APPLICATION_LOG.error("No data found for supplied table.");
+            else {
                 values.forEach(row -> {
-                    try {
-                        for (int x = 3; x <= 20; x++) {
-                            try {
-                                Tier tier = Tier.valueOf(row.get(0).toString());
-                                Category category = Category.fromString(row.get(1).toString());
-                                BigDecimal weight = BigDecimal.valueOf(0);
-                                if (row.size() > x - 1) weight = new BigDecimal(row.get(x - 1).toString());
-                                WeightedTierCategoryPair pair = new WeightedTierCategoryPair(tier, category, weight);
-                                if (!levelBrackets.containsKey(x)) {
-                                    levelBrackets.put(x, new ArrayList<>());
+                    if(!isNullOrEmpty(row.get(0))) {
+                        try {
+                            for (int i = 3; i <= 20; i++) {
+                                try {
+                                    Category category = new Category(row.get(1).toString())
+                                            .withWeight(new BigDecimal(isNullOrEmpty(row.get(i - 1)) ? "0" : row.get(i - 1).toString()));
+
+                                    Optional<Tier> tier = this.getTiersPerLevel()
+                                            .get(i)
+                                            .stream()
+                                            .filter(t -> t.getName().equals(row.get(0).toString()))
+                                            .findFirst();
+                                    if (tier.isPresent()) {
+                                        tier.get().withCategory(category);
+                                    } else {
+                                        Loggers.APPLICATION_LOG.error("No tier defined for Category <{}>.", row.get(0).toString());
+                                    }
+
+                                } catch (IllegalArgumentException ex) {
+                                    Loggers.APPLICATION_LOG.debug("Skipping a row due to an Illegal Argument Exception.");
                                 }
-                                levelBrackets.get(x).add(pair);
-                            } catch (IllegalArgumentException ex) {
-                                Loggers.APPLICATION_LOG.debug("Skipping a row due to an Illegal Argument Exception.");
-
                             }
+                        } catch (Exception ex) {
+                            Loggers.APPLICATION_LOG.warn("Exception: ", ex);
                         }
-                    } catch (Exception ex) {
-                        Loggers.APPLICATION_LOG.warn("Exception: ", ex);
-                    }
+                    } else Loggers.APPLICATION_LOG.info("Skipping a row, invalid category, missing name.");
                 });
-
             }
         } catch (IOException ex) {
-            Loggers.APPLICATION_LOG.warn("IOException: ", ex);
+            Loggers.APPLICATION_LOG.warn("IOException", ex);
         }
-        this.levelBrackets = levelBrackets;
     }
 
     private Sheets getSheetsService() throws IOException, NotAuthenticatedException {
@@ -227,7 +241,7 @@ public class ItemService {
         GoogleAuthorizationCodeFlow flow = this.getFlow();
 
         Credential credential = flow.loadCredential("hawthorne");
-        if(credential == null) {
+        if (credential == null) {
             throw new NotAuthenticatedException("Error: Not Authorized.");
             //Not authorized
             //Break here and wait for explicit Authorization
@@ -268,32 +282,19 @@ public class ItemService {
                 .build();
     }
 
-    public List<Item> getItemList(Tier tier, Category category) {
-        String tierName = tier + "-" + category;
-        if (tierSortedItemLists.containsKey(tierName)) {
-            return tierSortedItemLists.get(tierName);
-        }
-        return new ArrayList<Item>();
+    public List<Item> getItems(Tier tier, Category category) {
+        return this.items
+                .parallelStream()
+                .filter(item -> item.getCategoryName().equals(category.toString()) && item.getTierName().equals(tier.toString()))
+                .collect(Collectors.toList());
     }
 
-    public List<Item> getItemList() {
+    public List<Item> getItems() {
         return this.items;
     }
 
-    public Map<Integer, List<WeightedTierCategoryPair>> getLevelBrackets() {
-        return this.levelBrackets;
-    }
-
-    public List<WeightedTierCategoryPair> getLevelBracket(Integer level) {
-        return this.levelBrackets.get(level);
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public Map<Integer, Set<Tier>> getTiersPerLevel() {
+        return tiersPerLevel;
     }
 
     public Boolean getAuthenticated() {
@@ -302,5 +303,10 @@ public class ItemService {
 
     public void setAuthenticated(Boolean authenticated) {
         isAuthenticated = authenticated;
+    }
+
+    public boolean isNullOrEmpty(Object string) {
+        return string == null || string.toString().isEmpty();
+
     }
 }
