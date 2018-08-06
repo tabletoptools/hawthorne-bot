@@ -6,6 +6,7 @@ import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -76,6 +77,19 @@ public class GeneralCommands {
                 + args[1]
                 + " sessions. I'll notify you if anything interesting pops up. Enable auto-session-signup with `dev!autosignup true`")
                 .queue();
+    }
+
+    @Command("saveStats")
+    @Description("Save Bot Statistics")
+    @Constraint(BotOwnerConstraint.class)
+    public static void saveStats(MessageReceivedEvent event) {
+        try {
+            HawthorneBot.saveStatistics();
+        }
+        catch(Exception ex) {
+            Loggers.APPLICATION_LOG.error("Error: ", ex);
+            throw ex;
+        }
     }
 
     @Command("adventurer")

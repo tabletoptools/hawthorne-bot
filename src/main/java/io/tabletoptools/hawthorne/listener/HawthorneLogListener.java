@@ -15,17 +15,25 @@
 package io.tabletoptools.hawthorne.listener;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
+import io.tabletoptools.hawthorne.model.Statistics;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.user.GenericUserPresenceEvent;
+import net.dv8tion.jda.core.events.user.UserTypingEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class HawthorneLogListener extends ListenerAdapter {
 
     private final TextChannel jesseLogChannel = HawthorneBot.instance().getClient().getTextChannelById(419296624808951809L);
 
+    private static Statistics statistics = new Statistics();
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+
+        statistics.bumpMessageCount();
 
         if (event.getAuthor().getIdLong() == 169443108478648321L) {
             EmbedBuilder eb = new EmbedBuilder()
@@ -38,5 +46,28 @@ public class HawthorneLogListener extends ListenerAdapter {
         /*if(event.getGuild().getIdLong() == 308324031478890497L) {
             HawthorneLogService.instance().log(event);
         }*/
+    }
+
+    @Override
+    public void onGenericEvent(Event event) {
+        statistics.bumpEventCount();
+    }
+
+    @Override
+    public void onUserTyping(UserTypingEvent event) {
+        statistics.bumpTypingStartCount();
+    }
+
+    @Override
+    public void onGenericUserPresence(GenericUserPresenceEvent event) {
+        statistics.bumpPresenceUpdateCount();
+    }
+
+    public static Statistics getStatistics() {
+        return statistics;
+    }
+
+    public static void resetStatistics() {
+        statistics = new Statistics();
     }
 }
