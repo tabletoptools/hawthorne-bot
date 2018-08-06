@@ -26,14 +26,14 @@ public class LootCommands {
 
     @Command("genloot")
     @Description("Generate loot! :D")
-    @Constraint(value = {
+    /*@Constraint(value = {
             BotOwnerConstraint.class,
             HawthorneHeadOfStaffConstraint.class,
             HawthorneAdminConstraint.class,
             HawthorneDMConstraint.class,
             HawthorneTrialDMConstraint.class,
             TesterConstraint.class
-    }, enforceAll = false)
+    }, enforceAll = false)*/
     public static void loot(MessageReceivedEvent event, @Parameter("Player Count") Integer playerCount, @Parameter("APL") String aplAsString) {
 
         event.getMessage().delete().queue();
