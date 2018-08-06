@@ -49,8 +49,10 @@ public class ReactionListener extends ListenerAdapter {
             return;
         }
 
-        StringBuilder lootFieldBuilder = new StringBuilder().append("```");
+        StringBuilder lootFieldBuilder = new StringBuilder().append("```\n");
         Integer APL = settings.getAPL().setScale(0, RoundingMode.HALF_UP).intValue();
+
+        Loggers.APPLICATION_LOG.info("Rolled for <{}> players.", settings.getPlayerCount());
 
         for (int x = 0; x < settings.getPlayerCount(); x++) {
             try {
@@ -59,6 +61,8 @@ public class ReactionListener extends ListenerAdapter {
                 Item item = RandomWeightedObjectService.getObject(ItemService.instance().getItems(tier, category));
 
                 Long amount = item.getAmountPerLevel().get(APL).getAmount();
+
+                Loggers.APPLICATION_LOG.info("Rolled for player <{}>, <{}>x <{}>", x, amount, item.getName());
                 String name = item.getName();
 
                 String value = getItemOutput(amount, name);
@@ -71,6 +75,8 @@ public class ReactionListener extends ListenerAdapter {
                 lootFieldBuilder.append("\n");
             }
         }
+
+        Loggers.APPLICATION_LOG.info(lootFieldBuilder.toString());
 
         try {
             final BigDecimal zero = BigDecimal.valueOf(0);

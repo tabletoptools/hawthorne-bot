@@ -15,7 +15,7 @@ before_install:
   if [ ! -d $HOME/google-cloud-sdk ]; then
     curl https://sdk.cloud.google.com | bash;
   fi
-- BUILD_VERSION="1.8.1"
+- BUILD_VERSION="1.8.2"
 - tar -xzf credentials.tar.gz
 - mkdir -p lib
 - gcloud auth activate-service-account --key-file deploy-key.json

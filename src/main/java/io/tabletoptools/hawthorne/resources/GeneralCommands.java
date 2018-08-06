@@ -8,6 +8,7 @@ import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.jexl3.*;
@@ -49,6 +50,7 @@ public class GeneralCommands {
     @Description("Evaluate an expression")
     @Constraint(BotOwnerConstraint.class)
     public static void eval(MessageReceivedEvent event, @Parameter("Expression") String... args) {
+
         event.getMessage().delete().queue();
         JexlEngine jexl = new JexlBuilder().create();
 
