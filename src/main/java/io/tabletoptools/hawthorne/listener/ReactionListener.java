@@ -78,7 +78,7 @@ public class ReactionListener extends ListenerAdapter {
 
             int maxTier = maxTierOptional.map(tier1 -> Integer.parseInt(tier1.getName().substring(1))).orElse(3);
             DynamicAmount d5 = DynamicAmount.withQuery("1d5");
-            int rolls = settings.getPlayerCount();
+            int rolls = 1;
             while(rolls > 0) {
                 rolls--;
                 while (d5.getAmount() == 5L) {

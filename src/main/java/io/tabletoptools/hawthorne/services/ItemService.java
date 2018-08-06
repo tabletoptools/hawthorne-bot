@@ -84,7 +84,7 @@ public class ItemService {
         }
     }
 
-    private final String itemSheetId = "1vj5ASpndXA4RFNV0L-ib7uvltLjH-k4FrqQWJG2uABM";
+    private final String itemSheetId = "1ZIJYX7zlsDrAweH4ImCU6piw57crphOAxLzK5O4VzWM";
 
     public void load() throws NotAuthenticatedException {
         Loggers.APPLICATION_LOG.info("Loading Tiers...");
@@ -111,36 +111,40 @@ public class ItemService {
                 values.forEach(row -> {
                     try {
 
-                        String name = row.get(0).toString();
+                        if(row.get(1) != null && !"".equals(row.get(1))) {
 
-                        String tier = "T" + row.get(1).toString();
+                            String name = row.get(0).toString();
 
-                        BigDecimal weight = new BigDecimal(row.get(2) == null ? "0" : row.get(2).toString());
+                            String tier = "T" + row.get(1).toString();
 
-                        String category = row.get(3).toString();
+                            BigDecimal weight = new BigDecimal(row.get(2) == null ? "0" : row.get(2).toString());
 
-                        Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier, name);
+                            String category = row.get(3).toString();
 
-                        Map<Integer, Amount> amountPerLevel = new HashMap<>();
-                        for (int i = 4; i < 22; i++) {
-                            if (row.get(i) == null) {
-                                amountPerLevel.put(i - 1, new StaticAmount(1L));
-                            } else {
-                                try {
-                                    amountPerLevel.put(i - 1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
-                                } catch (NumberFormatException ex) {
+                            Loggers.APPLICATION_LOG.debug("Processing Item <{}>: <{}>", tier, name);
+
+                            Map<Integer, Amount> amountPerLevel = new HashMap<>();
+                            for (int i = 4; i < 22; i++) {
+                                if (row.get(i) == null) {
+                                    amountPerLevel.put(i - 1, new StaticAmount(1L));
+                                } else {
                                     try {
-                                        amountPerLevel.put(i - 1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
-                                    } catch (Exception ex2) {
-                                        Loggers.APPLICATION_LOG.warn("Error while getting amount for level and item. Setting default (1): ", ex2);
-                                        amountPerLevel.put(i - 1, new StaticAmount(1L));
+                                        amountPerLevel.put(i - 1, new StaticAmount(Long.parseLong(String.valueOf(row.get(i)))));
+                                    } catch (NumberFormatException ex) {
+                                        try {
+                                            amountPerLevel.put(i - 1, DynamicAmount.withQuery(String.valueOf(row.get(i))));
+                                        } catch (Exception ex2) {
+                                            Loggers.APPLICATION_LOG.warn("Error while getting amount for level and item. Setting default (1): ", ex2);
+                                            amountPerLevel.put(i - 1, new StaticAmount(1L));
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        Item item = new Item(name, tier, weight, category, amountPerLevel);
-                        items.add(item);
+                            Item item = new Item(name, tier, weight, category, amountPerLevel);
+                            items.add(item);
+
+                        }
                     } catch (Exception ex) {
                         Loggers.APPLICATION_LOG.warn("Exception: ", ex);
                     }
