@@ -83,13 +83,13 @@ public class ReactionListener extends ListenerAdapter {
             Optional<Tier> maxTierOptional = ItemService.instance().getTiersPerLevel().get(APL).stream().filter(tier -> tier.getWeight().compareTo(zero) > 0).max(Comparator.comparingInt(a -> Integer.parseInt(a.getName().substring(1))));
 
             int maxTier = maxTierOptional.map(tier1 -> Integer.parseInt(tier1.getName().substring(1))).orElse(3);
-            DynamicAmount d5 = DynamicAmount.withQuery("1d5");
+            DynamicAmount d10 = DynamicAmount.withQuery("1d10");
             int rolls = 1;
             while(rolls > 0) {
                 rolls--;
-                while (d5.getAmount() == 5L) {
+                while (d10.getAmount() == 10L) {
                     int tier = 0;
-                    while (d5.getAmount() == 5L) {
+                    while (d10.getAmount() == 10L) {
                         if(tier < maxTier) tier++;
                         else {
                             rolls++;
