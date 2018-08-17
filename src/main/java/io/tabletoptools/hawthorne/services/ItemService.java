@@ -84,7 +84,7 @@ public class ItemService {
         }
     }
 
-    private final String itemSheetId = "1ZIJYX7zlsDrAweH4ImCU6piw57crphOAxLzK5O4VzWM";
+    private final String itemSheetId = "1E-8xhTVVwii4NR7hfYMAuF6PCzGrbbOfJ0VzeF4UGrE";
 
     public void load() throws NotAuthenticatedException {
         Loggers.APPLICATION_LOG.info("Loading Tiers...");
