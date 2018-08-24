@@ -21,14 +21,26 @@ import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.services.ItemService;
 import io.tabletoptools.hawthorne.services.RandomWeightedObjectService;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 public class ReactionListener extends ListenerAdapter {
@@ -38,6 +50,34 @@ public class ReactionListener extends ListenerAdapter {
         if (event.getUser().isBot()) return;
         if (HawthorneBot.instance().hasSettings(event.getMessageIdLong())) {
             generateLootForMessage(event);
+        }
+        if (event.getChannel().getIdLong() == 475357531531640835L) {
+            Message message = event.getJDA().getTextChannelById(event.getChannel().getIdLong()).getMessageById(event.getMessageIdLong()).complete();
+            if (!message.getEmbeds().isEmpty() && message.getEmbeds().get(0).getTitle().equals("Audit Request")) {
+                MessageEmbed embed = message.getEmbeds().get(0);
+                message.delete().queue();
+                Date date = new Date(message.getCreationTime().until(OffsetDateTime.now(), ChronoUnit.MILLIS));
+                DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+                String timeToCompletion = formatter.format(date);
+
+                MessageEmbed newEmbed = new EmbedBuilder()
+                        .setTitle("User Audited")
+                        .setAuthor(event.getUser().getName(), null, event.getUser().getEffectiveAvatarUrl())
+                        .setDescription(
+                                new StringBuilder()
+                                .append("Audited User: ")
+                                .append(embed.getFooter().getText())
+                        )
+                        .setFooter("Time to completion: " + timeToCompletion, null)
+                        .build();
+
+                Message newMessage = new MessageBuilder()
+                        .setEmbed(newEmbed)
+                        .build();
+
+                event.getChannel().sendMessage(newMessage).queue();
+            }
         }
     }
 

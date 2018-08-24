@@ -6,7 +6,7 @@
 
     <groupId>io.tabletoptools.hawthorne</groupId>
     <artifactId>hawthorne-bot</artifactId>
-    <version>184</version>
+    <version>v185</version>
 
     <dependencies>
         <dependency>
@@ -22,7 +22,6 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-bigquery</artifactId>
-            <version>1.26.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -96,6 +95,17 @@
             <version>3.0.1</version>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>google-cloud-bom</artifactId>
+                <version>0.59.0-alpha</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <repositories>
         <repository>
