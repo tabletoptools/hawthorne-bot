@@ -19,6 +19,7 @@ import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
 import io.tabletoptools.hawthorne.resources.TradeCommands;
+import io.tabletoptools.hawthorne.services.HomebrewItemService;
 import io.tabletoptools.hawthorne.services.ItemService;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -128,6 +129,7 @@ public class HawthorneBot {
         Loggers.APPLICATION_LOG.info("Loading data for the first time.");
         try {
             ItemService.instance();
+            HomebrewItemService.instance().load();
         } catch (NotAuthenticatedException ex) {
             Loggers.APPLICATION_LOG.info("Not authenticated. Let's fix that, shall we?");
         }
@@ -212,6 +214,7 @@ public class HawthorneBot {
         try {
             Loggers.APPLICATION_LOG.debug("Updating loot generator items.");
             ItemService.instance().update();
+            HomebrewItemService.instance().load();
         } catch (NotAuthenticatedException ex) {
             Loggers.APPLICATION_LOG.error("Exception: ", ex);
         }
