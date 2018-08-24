@@ -12,6 +12,6 @@ public class HomebrewItemServiceTest {
     public void load() {
         HomebrewItemService.instance().load();
         Collection items = HomebrewItemService.instance().getItems();
-        assert(items.size() > 0);
+        assertTrue(items.size() > 0);
     }
 }
