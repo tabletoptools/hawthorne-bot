@@ -1,13 +1,11 @@
 package io.tabletoptools.hawthorne.services;
 
-import io.tabletoptools.hawthorne.model.Item;
 import io.tabletoptools.hawthorne.model.LookupItem;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
