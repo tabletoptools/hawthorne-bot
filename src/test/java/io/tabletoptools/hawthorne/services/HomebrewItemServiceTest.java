@@ -9,13 +9,9 @@ import static org.junit.Assert.*;
 public class HomebrewItemServiceTest {
 
     @Test
-    public void instance() {
-    }
-
-    @Test
     public void load() {
         HomebrewItemService.instance().load();
         Collection items = HomebrewItemService.instance().getItems();
-
+        assert(items.size() > 0);
     }
 }

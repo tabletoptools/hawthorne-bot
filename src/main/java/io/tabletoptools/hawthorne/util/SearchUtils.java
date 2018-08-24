@@ -1,7 +1,6 @@
 package io.tabletoptools.hawthorne.util;
 
 import io.tabletoptools.hawthorne.model.ChoosableEntity;
-import io.tabletoptools.hawthorne.model.LookupItem;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 

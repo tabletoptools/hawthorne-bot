@@ -6,24 +6,14 @@ import ch.hive.discord.bots.commands.Description;
 import ch.hive.discord.bots.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
-import io.tabletoptools.hawthorne.model.ListMessageInstance;
-import io.tabletoptools.hawthorne.model.LookupItem;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import io.tabletoptools.hawthorne.services.HomebrewItemService;
-import jdk.nashorn.internal.lookup.Lookup;
-import me.xdrop.fuzzywuzzy.FuzzySearch;
-import me.xdrop.fuzzywuzzy.model.ExtractedResult;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.jexl3.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GeneralCommands {
 
