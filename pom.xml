@@ -6,7 +6,7 @@
 
     <groupId>io.tabletoptools.hawthorne</groupId>
     <artifactId>hawthorne-bot</artifactId>
-    <version>v187</version>
+    <version>v188</version>
 
     <dependencies>
         <dependency>

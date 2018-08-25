@@ -98,7 +98,6 @@ public class ReactionListener extends ListenerAdapter {
 
                 Long amount = item.getAmountPerLevel().get(APL).getAmount();
 
-                Loggers.APPLICATION_LOG.info("Rolled for player <{}>, <{}>x <{}>", x, amount, item.getName());
                 String name = item.getName();
 
                 String value = getItemOutput(amount, name);
@@ -112,7 +111,6 @@ public class ReactionListener extends ListenerAdapter {
             }
         }
 
-        Loggers.APPLICATION_LOG.info(lootFieldBuilder.toString());
 
         try {
             final BigDecimal zero = BigDecimal.valueOf(0);
