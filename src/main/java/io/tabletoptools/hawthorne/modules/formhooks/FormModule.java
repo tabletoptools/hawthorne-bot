@@ -267,7 +267,7 @@ public class FormModule extends Module {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         return Unirest.get("https://api.typeform.com/forms/" + formId + "/responses")
-                .header("Authorization", "Bearer " + HawthorneBot.instance().getTypeformToken())
+                .header("Authorization", "bearer " + HawthorneBot.instance().getTypeformToken())
                 .queryString("since", dateFormat.format(fromDate))
                 .asJson();
     }
