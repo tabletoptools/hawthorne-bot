@@ -6,10 +6,7 @@ import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
 import io.tabletoptools.discord.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
-import io.tabletoptools.hawthorne.listener.GuildMemberListener;
-import io.tabletoptools.hawthorne.listener.HawthorneLogListener;
-import io.tabletoptools.hawthorne.listener.MessageListener;
-import io.tabletoptools.hawthorne.listener.ReactionListener;
+import io.tabletoptools.hawthorne.listener.*;
 import io.tabletoptools.hawthorne.model.RollSettings;
 import io.tabletoptools.hawthorne.model.Statistics;
 import io.tabletoptools.hawthorne.modules.coffee.CoffeeModule;
@@ -150,6 +147,8 @@ public class HawthorneBot {
         getClient().addEventListener(new ReactionListener());
         getClient().addEventListener(new GuildMemberListener());
         getClient().addEventListener(new HawthorneLogListener());
+        //getClient().addEventListener(new AyaListener());
+        getClient().addEventListener(new WeatherListener());
         //getClient().addEventListener(new TypingListener());
         Loggers.APPLICATION_LOG.info("Successfully started discord client.");
         //Discord shutdown hook
