@@ -39,6 +39,7 @@ public class MessageListener extends ListenerAdapter {
         if ("/auditme".equals(event.getMessage().getContentRaw())) {
 
             event.getMessage().delete().queue();
+            event.getTextChannel().sendMessage("You have been added to The List: message a member of @Auditor if you have questions.").queue();
             MessageEmbed embed = new EmbedBuilder()
                     .setTitle("Audit Request")
                     .setAuthor(event.getAuthor().getName(), null, event.getAuthor().getEffectiveAvatarUrl())
