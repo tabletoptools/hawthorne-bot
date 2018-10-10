@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class LogListener extends ListenerAdapter {
 
-    private static final BigQuery BIG_QUERY = BigQueryOptions.getDefaultInstance().getService();
+    // private static final BigQuery BIG_QUERY = BigQueryOptions.getDefaultInstance().getService();
 
     @Override
     public void onReady(ReadyEvent event) {

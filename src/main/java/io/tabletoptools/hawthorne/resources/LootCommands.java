@@ -9,6 +9,7 @@ import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.model.RollSettings;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
+import io.tabletoptools.hawthorne.services.HomebrewItemService;
 import io.tabletoptools.hawthorne.services.ItemService;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Member;
@@ -16,7 +17,6 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.math.BigDecimal;
@@ -89,6 +89,7 @@ public class LootCommands {
         event.getChannel().sendMessage("Updating Data...").queue(message -> {
             try {
                 ItemService.instance().update();
+                HomebrewItemService.instance().update();
                 message.editMessage("Finished updating Data.").queue();
             } catch (NotAuthenticatedException ex) {
                 message.editMessage("Not Authenticated. Please use the authenticate command.").queue();

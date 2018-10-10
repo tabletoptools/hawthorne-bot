@@ -4,7 +4,9 @@ import io.tabletoptools.hawthorne.model.LookupItem;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,10 +25,18 @@ public class HomebrewItemService {
         return instance;
     }
 
+    public void update() {
+        this.load();
+    }
+
     public void load() {
         try {
             URL url = new URL("https://raw.githubusercontent.com/tabletoptools/Hawthorne-Docs/develop/hawthorne/homebrew.md");
-            Scanner scanner = new Scanner(url.openStream());
+
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setUseCaches(false);
+            InputStream inputStream = urlConnection.getInputStream();
+            Scanner scanner = new Scanner(inputStream);
 
             ArrayList<LookupItem> items = new ArrayList<>();
             boolean passedIntroduction = false;
@@ -50,6 +60,7 @@ public class HomebrewItemService {
 
             }
             scanner.close();
+            urlConnection.getInputStream().close();
             this.items = items;
         } catch (IOException e) {
             Loggers.APPLICATION_LOG.error("Error reading homebrew docs.");
