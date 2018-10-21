@@ -1,6 +1,5 @@
 package io.tabletoptools.hawthorne.listener;
 
-import io.tabletoptools.hawthorne.model.DynamicAmount;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
