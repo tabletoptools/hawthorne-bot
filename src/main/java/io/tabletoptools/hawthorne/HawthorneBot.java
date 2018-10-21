@@ -149,6 +149,7 @@ public class HawthorneBot {
         getClient().addEventListener(new HawthorneLogListener());
         //getClient().addEventListener(new AyaListener());
         getClient().addEventListener(new WeatherListener());
+        getClient().addEventListener(new HalloweenListener());
         //getClient().addEventListener(new TypingListener());
         Loggers.APPLICATION_LOG.info("Successfully started discord client.");
         //Discord shutdown hook

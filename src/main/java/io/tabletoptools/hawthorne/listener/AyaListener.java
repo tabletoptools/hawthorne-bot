@@ -14,13 +14,8 @@ public class AyaListener extends ListenerAdapter {
                     .complete()
                     .sendMessage("You have been summoned in "+event.getTextChannel().getName())
                     .queue();
-
         }
-
-
-
     }
-
-
-
 }
+
+
