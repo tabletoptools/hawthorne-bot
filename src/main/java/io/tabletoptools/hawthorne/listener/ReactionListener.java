@@ -183,9 +183,7 @@ public class ReactionListener extends ListenerAdapter {
 
     private String getEOLString() {
 
-        return "Time until bot EOL: " +
-                getEOL() +
-                ".";
+        return getEOL();
 
     }
 
