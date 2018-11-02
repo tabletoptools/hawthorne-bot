@@ -21,7 +21,7 @@ public class BotOwnerConstraint extends ConstraintCheck {
     @Override
     public boolean check(MessageReceivedEvent event) {
 
-        return "203901518846492672".equals(event.getAuthor().getId());
+        return "135468266695950336".equals(event.getAuthor().getId());
     }
 
     @Override
