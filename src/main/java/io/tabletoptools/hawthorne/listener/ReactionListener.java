@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
@@ -168,7 +170,7 @@ public class ReactionListener extends ListenerAdapter {
                 .setTitle(originalAuthor.getName() + " rolled for loot!")
                 .setThumbnail("https://cdn.discordapp.com/attachments/386516710984777730/410033026500788225/token_1.png")
                 .setColor(HawthorneBot.instance().HAWTHORNE_PURPLE)
-                .setFooter(HawthorneBot.instance().FOOTER, "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png")
+                .setFooter(getEOLString(), "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png")
                 .addField("Player Count", settings.getPlayerCount().toString(), true)
                 .addField("Average Party Level", settings.getAPL().toString(), true)
                 .addField("Loot - Items", lootField, false)
@@ -177,6 +179,39 @@ public class ReactionListener extends ListenerAdapter {
         settings.getMessage().editMessage(embed).queue();
         settings.getMessage().clearReactions().queue();
         HawthorneBot.instance().removeMessage(event.getMessageIdLong());
+    }
+
+    private String getEOLString() {
+
+        return "Time until bot EOL: " +
+                getEOL() +
+                ".";
+
+    }
+
+    private String getEOL() {
+        Instant now = Instant.now();
+        Instant eol = Instant.ofEpochMilli(1542668400000L);
+
+        Duration duration = Duration.between(now, eol);
+
+        return formatDuration(duration);
+    }
+
+    public static String formatDuration(Duration duration) {
+        final long SECOND = 1;
+        final long MINUTE = 60 * SECOND;
+        final long HOUR = 60 * MINUTE;
+        final long DAY = 24 * HOUR;
+        long seconds = duration.getSeconds();
+        long absSeconds = Math.abs(seconds);
+        String positive = String.format(
+                "%d:%d:%02d:%02d",
+                absSeconds / DAY,
+                (absSeconds % DAY) / HOUR,
+                (absSeconds % HOUR) / MINUTE,
+                absSeconds % MINUTE);
+        return seconds < 0 ? "-" + positive : positive;
     }
 
     private String getItemOutput(Long amount, String name) {
