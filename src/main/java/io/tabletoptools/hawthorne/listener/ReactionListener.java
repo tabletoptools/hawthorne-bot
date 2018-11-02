@@ -1,11 +1,11 @@
 /*
  * $Id: HttpFilter 3988 2017-06-21 13:47:09Z cfi $
  * Created on 05.02.18 14:23
- * 
+ *
  * Copyright (c) 2017 by bluesky IT-Solutions AG,
  * Kaspar-Pfeiffer-Strasse 4, 4142 Muenchenstein, Switzerland.
  * All rights reserved.
- * 
+ *
  * This software is the confidential and proprietary information
  * of bluesky IT-Solutions AG ("Confidential Information").  You
  * shall not disclose such Confidential Information and shall use
@@ -62,8 +62,8 @@ public class ReactionListener extends ListenerAdapter {
                         .setAuthor(event.getUser().getName(), null, event.getUser().getEffectiveAvatarUrl())
                         .setDescription(
                                 new StringBuilder()
-                                .append("Audited User: ")
-                                .append(embed.getFooter().getText())
+                                        .append("Audited User: ")
+                                        .append(embed.getFooter().getText())
                         )
                         .setFooter("Time to completion: " + timeToCompletion, null)
                         .build();
@@ -119,12 +119,12 @@ public class ReactionListener extends ListenerAdapter {
             int maxTier = maxTierOptional.map(tier1 -> Integer.parseInt(tier1.getName().substring(1))).orElse(3);
             DynamicAmount d10 = DynamicAmount.withQuery("1d10");
             int rolls = 1;
-            while(rolls > 0) {
+            while (rolls > 0) {
                 rolls--;
                 while (d10.getAmount() == 10L) {
                     int tier = 0;
                     while (d10.getAmount() == 10L) {
-                        if(tier < maxTier) tier++;
+                        if (tier < maxTier) tier++;
                         else {
                             rolls++;
                             break;
@@ -153,8 +153,7 @@ public class ReactionListener extends ListenerAdapter {
 
                 }
             }
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             Loggers.APPLICATION_LOG.error("Exception creating a dynamic amount, check syntax: ", ex);
         }
 
@@ -183,15 +182,14 @@ public class ReactionListener extends ListenerAdapter {
     private String getItemOutput(Long amount, String name) {
         StringBuilder valueBuilder = new StringBuilder();
 
-        if(amount != 1 && !name.contains("%amount%")) {
+        if (amount != 1 && !name.contains("%amount%")) {
             valueBuilder.append(amount)
                     .append("x ");
         }
 
         if (name.contains("%amount%")) {
             valueBuilder.append(name.replace("%amount%", amount.toString()));
-        }
-        else valueBuilder.append(name);
+        } else valueBuilder.append(name);
 
         return valueBuilder.toString();
     }
