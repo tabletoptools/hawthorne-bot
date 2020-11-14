@@ -33,7 +33,7 @@ import static spark.Spark.*;
 public class APIModule extends Module {
 
     private static final Guild HAWTHORNE_GUILD = HawthorneBot.instance().getClient().getGuildById(308324031478890497L);
-    private static final String DISCORD_API_BASE_URL = "https://discordapp.com/api/v6";
+    private static final String DISCORD_API_BASE_URL = "https://discord.com/api/v6";
     private static final HashMap<String, DiscordUser> AUTH_TOKEN_USER_MAP = new HashMap<>();
     private ScheduledExecutorService scheduledExecutorService;
     private ResponseTransformer responseTransformer = new ResponseTransformer() {

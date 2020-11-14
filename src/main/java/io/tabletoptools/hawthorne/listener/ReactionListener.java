@@ -94,17 +94,8 @@ public class ReactionListener extends ListenerAdapter {
 
         for (int x = 0; x < settings.getPlayerCount(); x++) {
             try {
-                Tier tier = RandomWeightedObjectService.getObject(ItemService.instance().getTiersPerLevel().get(APL));
-                Category category = RandomWeightedObjectService.getObject(tier.getCategories());
-                Item item = RandomWeightedObjectService.getObject(ItemService.instance().getItems(tier, category));
 
-                Long amount = item.getAmountPerLevel().get(APL).getAmount();
-
-                String name = item.getName();
-
-                String value = getItemOutput(amount, name);
-
-                lootFieldBuilder.append(value);
+                lootFieldBuilder.append(getRandomItemAsString(APL));
             } catch (NotAuthenticatedException ex) {
                 lootFieldBuilder.append("Not Authenticated.");
             }
@@ -140,7 +131,7 @@ public class ReactionListener extends ListenerAdapter {
                             .filter(t -> ("T" + finalTier).equals(t.getName()))
                             .collect(Collectors.toList()).get(0);
 
-                    Category category = RandomWeightedObjectService.getObject(itemTier.getCategories());
+                    Category category = getRandomCategoryForTier(itemTier);
 
                     Item item = RandomWeightedObjectService.getObject(ItemService.instance().getItems(itemTier, category));
 
@@ -170,7 +161,7 @@ public class ReactionListener extends ListenerAdapter {
                 .setTitle(originalAuthor.getName() + " rolled for loot!")
                 .setThumbnail("https://cdn.discordapp.com/attachments/386516710984777730/410033026500788225/token_1.png")
                 .setColor(HawthorneBot.instance().HAWTHORNE_PURPLE)
-                .setFooter(getEOLString(), "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png")
+                .setFooter(HawthorneBot.instance().FOOTER, "https://cdn.discordapp.com/attachments/405639224084398090/405639389096706068/token_3.png")
                 .addField("Player Count", settings.getPlayerCount().toString(), true)
                 .addField("Average Party Level", settings.getAPL().toString(), true)
                 .addField("Loot - Items", lootField, false)
@@ -181,35 +172,27 @@ public class ReactionListener extends ListenerAdapter {
         HawthorneBot.instance().removeMessage(event.getMessageIdLong());
     }
 
-    private String getEOLString() {
+    private String getRandomItemAsString(Integer APL) throws NotAuthenticatedException {
+        Item item = getRandomItem(APL);
 
-        return getEOL();
+        Long amount = item.getAmountPerLevel().get(APL).getAmount();
+        String name = item.getName();
 
+        return getItemOutput(amount, name);
     }
 
-    private String getEOL() {
-        Instant now = Instant.now();
-        Instant eol = Instant.ofEpochMilli(1542668400000L);
-
-        Duration duration = Duration.between(now, eol);
-
-        return formatDuration(duration);
+    private Item getRandomItem(Integer APL) throws NotAuthenticatedException {
+        Tier tier = getRandomTierForAPL(APL);
+        Category category = getRandomCategoryForTier(tier);
+        return RandomWeightedObjectService.getObject(ItemService.instance().getItems(tier, category));
     }
 
-    public static String formatDuration(Duration duration) {
-        final long SECOND = 1;
-        final long MINUTE = 60 * SECOND;
-        final long HOUR = 60 * MINUTE;
-        final long DAY = 24 * HOUR;
-        long seconds = duration.getSeconds();
-        long absSeconds = Math.abs(seconds);
-        String positive = String.format(
-                "%d:%d:%02d:%02d",
-                absSeconds / DAY,
-                (absSeconds % DAY) / HOUR,
-                (absSeconds % HOUR) / MINUTE,
-                absSeconds % MINUTE);
-        return seconds < 0 ? "-" + positive : positive;
+    private Category getRandomCategoryForTier(Tier tier) {
+        return RandomWeightedObjectService.getObject(tier.getCategories());
+    }
+
+    private Tier getRandomTierForAPL(Integer APL) throws NotAuthenticatedException {
+        return RandomWeightedObjectService.getObject(ItemService.instance().getTiersPerLevel().get(APL));
     }
 
     private String getItemOutput(Long amount, String name) {

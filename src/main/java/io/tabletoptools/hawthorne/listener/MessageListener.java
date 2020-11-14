@@ -15,6 +15,7 @@
 package io.tabletoptools.hawthorne.listener;
 
 import ch.hive.discord.bots.commands.CommandBase;
+import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.discord.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.model.ListMessageInstance;
 import io.tabletoptools.hawthorne.model.LookupItem;
@@ -35,7 +36,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         CommandBase.instance().process(event);
-
+	Loggers.APPLICATION_LOG.info(event.getMessage().getContentRaw());
         if ("/auditme".equals(event.getMessage().getContentRaw())) {
 
             event.getMessage().delete().queue();

@@ -23,7 +23,7 @@ public class DynamicAmount implements Amount {
 
     public static DynamicAmount withQuery(String query) throws Exception {
         if(!validateExpression(query)) {
-            throw new Exception("Error, entered query does not match validation pattern.");
+            throw new Exception("Error, entered query does not match validation pattern." + query);
         }
         return new DynamicAmount(query);
     }

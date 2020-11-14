@@ -3,7 +3,7 @@
     "configurationEntries": {
       "prefix": "/h",
       "footer": "Hawthorne Bot",
-      "apiPort": 80
+      "apiPort": 8888
     }
   },
   "development": {

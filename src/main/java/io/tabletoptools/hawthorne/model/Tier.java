@@ -14,8 +14,6 @@
  */
 package io.tabletoptools.hawthorne.model;
 
-import javafx.collections.transformation.SortedList;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

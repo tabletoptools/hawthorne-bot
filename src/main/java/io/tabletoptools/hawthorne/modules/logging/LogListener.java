@@ -44,7 +44,7 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onStatusChange(StatusChangeEvent event) {
-        Loggers.APPLICATION_LOG.info("Changing Bot Status from <{}> to <{}>.", event.getOldStatus(), event.getStatus());
+        Loggers.APPLICATION_LOG.info("Changing Bot Status from <{}> to <{}>.", event.getOldStatus(), event.getNewStatus());
     }
 
     @Override

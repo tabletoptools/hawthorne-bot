@@ -42,21 +42,21 @@ import java.util.concurrent.TimeUnit;
 @Command("forms")
 public class FormModule extends Module {
 
-    private static final String ADVENTURER_REGISTRATION_FORM_ID = "DpCAsU";
-    private static final String DM_APPLICATION_FORM_ID = "tKWAOD";
-    private static final String INCIDENT_REPORT_FORM_ID = "fjNhAc";
+    private static final String ADVENTURER_REGISTRATION_FORM_ID = "PfXRkS";
+    private static final String DM_APPLICATION_FORM_ID = "RZwiLQ";
+    private static final String INCIDENT_REPORT_FORM_ID = "MqcU51";
     private static final String COUNCIL_APPLICATION_FORM_ID = "PayNbA";
 
-    private static final String REGISTRATION_FIELD_ID_NAME = "P8UTXkCRdrir";
-    private static final String REGISTRATION_FIELD_ID_USERNAME = "EXTgVo9eRp5R";
-    private static final String REGISTRATION_FIELD_ID_EMAIL = "uCI3TJGsy9iC";
-    private static final String REGISTRATION_FIELD_ID_TOWN = "A7496ehMTpBg";
-    private static final String REGISTRATION_FIELD_ID_RULE = "Nz5DIzUsV9GQ";
+    private static final String REGISTRATION_FIELD_ID_NAME = "SUwTOaf7YmMl";
+    private static final String REGISTRATION_FIELD_ID_USERNAME = "uqG5VplZDF6T";
+    private static final String REGISTRATION_FIELD_ID_EMAIL = "d1Xs5MSi5WAJ";
+    private static final String REGISTRATION_FIELD_ID_TOWN = "o6wvkBbBWv97";
+    private static final String REGISTRATION_FIELD_ID_RULE = "Sn98XtJP2w2y";
 
-    private static final String INCIDENT_REPORT_FIELD_ID_USERNAME = "mdrfCyhTj3If";
-    private static final String INCIDENT_REPORT_FIELD_ID_SEVERITY = "oP0SZroKDUqA";
+    private static final String INCIDENT_REPORT_FIELD_ID_USERNAME = "EtJAH5uhhnGg";
+    private static final String INCIDENT_REPORT_FIELD_ID_SEVERITY = "A4Ig8HneKES7";
 
-    private static final String APPLICATION_FIELD_ID_USERNAME = "uLIADukkwQGo";
+    private static final String APPLICATION_FIELD_ID_USERNAME = "ujwh2Zpg6nPM";
 
     private static final String COUNCIL_APPLICATION_FIELD_ID_USERNAME = "tB3D404EdqMo";
     private static final String COUNCIL_APPLICATION_FIELD_ID_AVAILABILITY = "h1AX9hs0rYP3";
@@ -263,7 +263,7 @@ public class FormModule extends Module {
 
     private HttpResponse<JsonNode> getFormResponsesSinceDate(String formId, Date fromDate) throws UnirestException {
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         return Unirest.get("https://api.typeform.com/forms/" + formId + "/responses")

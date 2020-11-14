@@ -1,5 +1,10 @@
 package io.tabletoptools.hawthorne.resources;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import java.util.Arrays;
 import ch.hive.discord.bots.commands.Command;
 import ch.hive.discord.bots.commands.Constraint;
 import ch.hive.discord.bots.commands.Description;
@@ -133,5 +138,46 @@ public class GeneralCommands {
         event.getGuild().getController().addRolesToMember(member, roles).queue();
         event.getChannel().sendMessage("Made " + member.getEffectiveName() + " a trial DM.").queue();
     }
+    @Command("ctd")
+    public static void commonToDraconic(MessageReceivedEvent event, @Parameter("text") String... text) {
 
+        event.getMessage().delete().queue();
+
+        String textString = Arrays.stream(text).reduce("", ((s, s2) -> s + " " + s2));
+        String mode = "ctd";
+
+        event.getTextChannel().sendMessage(translate(textString, mode)).queue();
+
+    }
+
+    @Command("dtc")
+    public static void draconicToCommon(MessageReceivedEvent event, @Parameter("text") String... text) {
+
+        event.getMessage().delete().queue();
+
+        String textString = Arrays.stream(text).reduce("", ((s, s2) -> s + " " + s2));
+        String mode = "dtc";
+
+        event.getTextChannel().sendMessage(translate(textString, mode)).queue();
+
+    }
+
+    private static String translate(String textString, String mode) {
+
+        try {
+            String html = Unirest.post("http://draconic.twilightrealm.com/")
+                    .field("action", mode)
+                    .field("text", textString)
+                    .field("translate", "Translate")
+                    .asString().getBody();
+
+            Document htmlDoc = Jsoup.parse(html);
+            String result = htmlDoc.getElementsByTag("textarea")
+                    .get("ctd".equals(mode) ? 1 : 0).ownText();
+            return result;
+        } catch (UnirestException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 }

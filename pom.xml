@@ -6,13 +6,23 @@
 
     <groupId>io.tabletoptools.hawthorne</groupId>
     <artifactId>hawthorne-bot</artifactId>
-    <version>v195</version>
+    <version>v196</version>
 
     <dependencies>
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>3.5.0_334</version>
+            <version>4.2.0_168</version>
+        </dependency>
+	<dependency>
+	    <groupId>com.squareup.okhttp3</groupId>
+	    <artifactId>okhttp</artifactId>
+	    <version>3.13.0</version>
+	</dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.11.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
@@ -111,8 +121,13 @@
         <repository>
             <id>jcenter</id>
             <name>jcenter-bintray</name>
-            <url>http://jcenter.bintray.com</url>
+            <url>https://jcenter.bintray.com</url>
         </repository>
+	<repository> <!-- Required for OkHTTP 3.13.0-SNAPSHOT -->
+	    <id>sonatype</id>
+	    <name>sonatype-snapshots</name>
+	    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	</repository>
         <repository>
             <id>tabletoptools-hawthorne</id>
             <name>tabletoptools-hawthorne</name>
