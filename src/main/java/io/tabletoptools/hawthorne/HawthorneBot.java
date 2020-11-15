@@ -165,13 +165,14 @@ public class HawthorneBot {
     public JDA getClient() {
         try {
             if (client == null) {
-                client = new JDABuilder(AccountType.BOT)
-                        .setToken(this.token)
-                        .build();
+                client = JDABuilder.createDefault(this.token).build();
+                client.awaitReady();
             }
             return client;
         } catch (LoginException ex) {
             Loggers.APPLICATION_LOG.error("Error Logging in.", ex);
+        } catch (InterruptedException ex) {
+            Loggers.APPLICATION_LOG.error("Error waiting for JDA.", ex);
         }
         return null;
     }
