@@ -2,10 +2,10 @@ package io.tabletoptools.hawthorne.model;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -160,7 +160,7 @@ public class ListMessageInstance<E extends ChoosableEntity> {
                 .instance()
                 .getClient()
                 .getTextChannelById(channelId)
-                .getMessageById(messageId)
+                .retrieveMessageById(messageId)
                 .complete()
                 .delete()
                 .queue();
@@ -171,10 +171,10 @@ public class ListMessageInstance<E extends ChoosableEntity> {
             this.cancel();
             event.getMessage().delete().queue();
         } else if ("n".equals(command)) {
-            event.getChannel().getMessageById(this.messageId).complete().editMessage(this.pageUp()).queue();
+            event.getChannel().retrieveMessageById(this.messageId).complete().editMessage(this.pageUp()).queue();
             event.getMessage().delete().queue();
         } else if ("p".equals(command)) {
-            event.getChannel().getMessageById(this.messageId).complete().editMessage(this.pageDown()).queue();
+            event.getChannel().retrieveMessageById(this.messageId).complete().editMessage(this.pageDown()).queue();
             event.getMessage().delete().queue();
         }
     }

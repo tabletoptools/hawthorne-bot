@@ -1,6 +1,6 @@
 /*
- * $Id: HttpFilter 3988 2017-06-21 13:47:09Z cfi $
- * Created on 15.04.18 00:17
+ * $Id: ParamDescriptor 3988 2017-06-21 13:47:09Z cfi $
+ * Created on Aug 10, 2017, 5:20:50 PM
  * 
  * Copyright (c) 2017 by bluesky IT-Solutions AG,
  * Kaspar-Pfeiffer-Strasse 4, 4142 Muenchenstein, Switzerland.
@@ -12,9 +12,16 @@
  * it only in accordance with the terms of the license agreement
  * you entered into with bluesky IT-Solutions AG.
  */
-package io.tabletoptools.hawthorne.modules.hawthorne;
+package io.tabletoptools.hawthorne.commands;
 
-import io.tabletoptools.hawthorne.modulizer.CommandClass;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public class HawthorneCommands extends CommandClass {
+/**
+ *
+ * @author cfi
+ */
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Parameter {
+    String value();
 }

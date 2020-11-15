@@ -1,6 +1,6 @@
 /*
  * $Id: HttpFilter 3988 2017-06-21 13:47:09Z cfi $
- * Created on 05.02.18 11:35
+ * Created on 11.11.17 07:31
  * 
  * Copyright (c) 2017 by bluesky IT-Solutions AG,
  * Kaspar-Pfeiffer-Strasse 4, 4142 Muenchenstein, Switzerland.
@@ -12,21 +12,16 @@
  * it only in accordance with the terms of the license agreement
  * you entered into with bluesky IT-Solutions AG.
  */
-package io.tabletoptools.hawthorne.constraint;
+package io.tabletoptools.hawthorne.commands;
 
-import io.tabletoptools.hawthorne.commands.ConstraintCheck;
-import io.tabletoptools.hawthorne.HawthorneBot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class HawthorneDMConstraint extends ConstraintCheck {
+public abstract class ConstraintCheck {
 
-    @Override
-    public boolean check(MessageReceivedEvent event) {
-        return event.getMember().getRoles().contains(HawthorneBot.instance().getClient().getRoleById(360411389384327169L));
-    }
+    public abstract boolean check(MessageReceivedEvent event);
 
-    @Override
     public String errorMessage() {
-        return "Not a DM.";
+        return "";
     }
+
 }

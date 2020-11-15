@@ -20,12 +20,12 @@ import io.tabletoptools.hawthorne.model.*;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.services.ItemService;
 import io.tabletoptools.hawthorne.services.RandomWeightedObjectService;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,11 +50,11 @@ public class ReactionListener extends ListenerAdapter {
             generateLootForMessage(event);
         }
         if (event.getChannel().getIdLong() == 475357531531640835L) {
-            Message message = event.getJDA().getTextChannelById(event.getChannel().getIdLong()).getMessageById(event.getMessageIdLong()).complete();
+            Message message = event.getJDA().getTextChannelById(event.getChannel().getIdLong()).retrieveMessageById(event.getMessageIdLong()).complete();
             if (!message.getEmbeds().isEmpty() && message.getEmbeds().get(0).getTitle().equals("Audit Request")) {
                 MessageEmbed embed = message.getEmbeds().get(0);
                 message.delete().queue();
-                Date date = new Date(message.getCreationTime().until(OffsetDateTime.now(), ChronoUnit.MILLIS));
+                Date date = new Date(message.getTimeCreated().until(OffsetDateTime.now(), ChronoUnit.MILLIS));
                 DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
                 formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
                 String timeToCompletion = formatter.format(date);

@@ -1,25 +1,27 @@
 package io.tabletoptools.hawthorne.modules.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import io.tabletoptools.discord.modulizer.Module;
-import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.modulizer.Module;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
 import io.tabletoptools.hawthorne.Config;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.model.AdventurerRegistration;
 import io.tabletoptools.hawthorne.modules.formhooks.DiscordUser;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 import org.json.JSONArray;
 import spark.Request;
 import spark.ResponseTransformer;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,11 +69,12 @@ public class APIModule extends Module {
             }, responseTransformer);
             get("/in-hawthorne", (request, response) -> {
                 String auth = request.headers("Authorization");
-                JSONArray guilds = Unirest.get(DISCORD_API_BASE_URL + "/users/@me/guilds")
+                JSONArray guildsJson = Unirest.get(DISCORD_API_BASE_URL + "/users/@me/guilds")
                         .header("Authorization", auth)
                         .asJson().getBody().getArray();
-
-                return guilds.toList().stream().anyMatch(guild -> "308324031478890497".equals(((HashMap) guild).get("id")));
+                List<Object> guilds = new ArrayList<>();
+                guildsJson.forEach(guilds::add);
+                return guilds.stream().anyMatch(guild -> "308324031478890497".equals(((HashMap) guild).get("id")));
             });
             get("/roles", "application/json", (request, response) -> {
                 List<Role> roles = HAWTHORNE_GUILD.getMemberById(getUser(request.headers("Authorization")).getId()).getRoles();
@@ -98,8 +101,7 @@ public class APIModule extends Module {
                             .setColor(new Color(73, 98, 62))
                             .setThumbnail("https://cdn1.iconfinder.com/data/icons/ordinary-people/512/adventurer-512.png")
                             .build();
-                    HAWTHORNE_GUILD.getController()
-                            .addSingleRoleToMember(HAWTHORNE_GUILD.getMemberById(user.getId()), HawthorneBot.instance().getClient().getRoleById(445939304695595028L))
+                    HAWTHORNE_GUILD.addRoleToMember(HAWTHORNE_GUILD.getMemberById(user.getId()), HawthorneBot.instance().getClient().getRoleById(445939304695595028L))
                             .queue();
                     try {
                         HawthorneBot.instance().getClient().getTextChannelById(417398439526137856L).sendMessage(embed).queue();

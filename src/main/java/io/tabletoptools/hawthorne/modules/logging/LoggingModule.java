@@ -14,7 +14,7 @@
  */
 package io.tabletoptools.hawthorne.modules.logging;
 
-import io.tabletoptools.discord.modulizer.Module;
+import io.tabletoptools.hawthorne.modulizer.Module;
 import io.tabletoptools.hawthorne.HawthorneBot;
 
 public class LoggingModule extends Module {

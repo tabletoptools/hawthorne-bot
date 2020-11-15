@@ -14,10 +14,10 @@
  */
 package io.tabletoptools.hawthorne.modules.formhooks;
 
-import io.tabletoptools.discord.modulizer.CommandClass;
-import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.modulizer.CommandClass;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.api.entities.Message;
 
 public class FormCommands extends CommandClass {
 

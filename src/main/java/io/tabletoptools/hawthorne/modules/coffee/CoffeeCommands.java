@@ -14,9 +14,9 @@
  */
 package io.tabletoptools.hawthorne.modules.coffee;
 
-import io.tabletoptools.discord.modulizer.CommandClass;
-import io.tabletoptools.discord.modulizer.annotation.Command;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import io.tabletoptools.hawthorne.modulizer.CommandClass;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class CoffeeCommands extends CommandClass {
 

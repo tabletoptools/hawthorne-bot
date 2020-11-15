@@ -49,11 +49,6 @@
             <version>1.2.3</version>
         </dependency>
         <dependency>
-            <groupId>ch.hive.discord</groupId>
-            <artifactId>discord-command-handler</artifactId>
-            <version>2.0.4</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-sheets</artifactId>
             <version>v4-rev487-1.23.0</version>
@@ -80,14 +75,15 @@
             <version>3.1</version>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>3.2.2</version>
-        </dependency>
-        <dependency>
-            <groupId>io.tabletoptools.discord</groupId>
-            <artifactId>modulizer</artifactId>
-            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.mashape.unirest</groupId>

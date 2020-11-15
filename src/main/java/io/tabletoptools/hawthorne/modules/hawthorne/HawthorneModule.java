@@ -14,8 +14,8 @@
  */
 package io.tabletoptools.hawthorne.modules.hawthorne;
 
-import io.tabletoptools.discord.modulizer.Module;
-import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.modulizer.Module;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
 import io.tabletoptools.hawthorne.modules.api.APIModule;
 import io.tabletoptools.hawthorne.modules.formhooks.FormModule;
 import io.tabletoptools.hawthorne.modules.logging.LoggingModule;

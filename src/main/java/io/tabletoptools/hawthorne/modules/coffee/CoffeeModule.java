@@ -1,7 +1,7 @@
 package io.tabletoptools.hawthorne.modules.coffee;
 
-import io.tabletoptools.discord.modulizer.Module;
-import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.modulizer.Module;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
 
 //Why is this a thing?
 //TODO: Buy open source coffee machine

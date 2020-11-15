@@ -15,11 +15,11 @@
 package io.tabletoptools.hawthorne.services;
 
 import io.tabletoptools.hawthorne.HawthorneBot;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class HawthorneLogService {
     public void log(MessageReceivedEvent event) {
         List<TextChannel> channels = logServer.getTextChannelsByName(event.getChannel().getName(), false);
         if(channels.size() == 0 || !channels.get(0).getName().equals(event.getChannel().getName())) {
-            TextChannel channel = (TextChannel)logServer.getController().createTextChannel(event.getChannel().getName()).complete();
+            TextChannel channel = (TextChannel)logServer.createTextChannel(event.getChannel().getName()).complete();
             channels.clear();
             channels.add(channel);
         }

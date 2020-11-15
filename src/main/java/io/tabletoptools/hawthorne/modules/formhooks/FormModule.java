@@ -18,15 +18,15 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import io.tabletoptools.discord.modulizer.Module;
-import io.tabletoptools.discord.modulizer.annotation.Command;
+import io.tabletoptools.hawthorne.modulizer.Module;
+import io.tabletoptools.hawthorne.modulizer.annotation.Command;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -82,7 +82,8 @@ public class FormModule extends Module {
                     try {
                         JSONObject response = ((JSONObject) item);
                         JSONArray answers = response.getJSONArray("answers");
-                        List<Object> answerList = answers.toList();
+                        List<Object> answerList = new ArrayList<>();
+                        answers.forEach(answerList::add);
 
                         String name = getAnswerString(answerList, REGISTRATION_FIELD_ID_NAME, "text");
                         String username = getAnswerString(answerList, REGISTRATION_FIELD_ID_USERNAME, "text");
@@ -115,7 +116,8 @@ public class FormModule extends Module {
                     try {
                         JSONObject response = ((JSONObject) item);
                         JSONArray answers = response.getJSONArray("answers");
-                        List<Object> answerList = answers.toList();
+                        List<Object> answerList = new ArrayList<>();
+                        answers.forEach(answerList::add);
 
                         String username = getAnswerString(answerList, APPLICATION_FIELD_ID_USERNAME, "text");
                         MessageEmbed embed = new EmbedBuilder()
@@ -142,7 +144,8 @@ public class FormModule extends Module {
                     try {
                         JSONObject response = ((JSONObject) item);
                         JSONArray answers = response.getJSONArray("answers");
-                        List<Object> answerList = answers.toList();
+                        List<Object> answerList = new ArrayList<>();
+                        answers.forEach(answerList::add);
 
                         String username = getAnswerString(answerList, INCIDENT_REPORT_FIELD_ID_USERNAME, "text");
                         Integer severity = getAnswerInteger(answerList, INCIDENT_REPORT_FIELD_ID_SEVERITY);
@@ -171,7 +174,8 @@ public class FormModule extends Module {
 
                         JSONObject response = ((JSONObject) item);
                         JSONArray answers = response.getJSONArray("answers");
-                        List<Object> answerList = answers.toList();
+                        List<Object> answerList = new ArrayList<>();
+                        answers.forEach(answerList::add);
 
                         String username = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_USERNAME, "text");
                         String charactername = getAnswerString(answerList, COUNCIL_APPLICATION_FIELD_ID_CHARACTER_NAME, "text");

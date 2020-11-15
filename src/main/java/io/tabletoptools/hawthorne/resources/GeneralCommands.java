@@ -5,16 +5,16 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.util.Arrays;
-import ch.hive.discord.bots.commands.Command;
-import ch.hive.discord.bots.commands.Constraint;
-import ch.hive.discord.bots.commands.Description;
-import ch.hive.discord.bots.commands.Parameter;
+import io.tabletoptools.hawthorne.commands.Command;
+import io.tabletoptools.hawthorne.commands.Constraint;
+import io.tabletoptools.hawthorne.commands.Description;
+import io.tabletoptools.hawthorne.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.jexl3.*;
 
 import java.util.ArrayList;
@@ -111,8 +111,8 @@ public class GeneralCommands {
         Member member = event.getMessage().getMentionedMembers().get(0);
 
         event.getMessage().delete().queue();
-        event.getGuild().getController().removeSingleRoleFromMember(member, event.getGuild().getRoleById(445939304695595028L)).queue();
-        event.getGuild().getController().addSingleRoleToMember(member, event.getGuild().getRoleById(343393950079385610L)).queue();
+        event.getGuild().removeRoleFromMember(member, event.getGuild().getRoleById(445939304695595028L)).queue();
+        event.getGuild().addRoleToMember(member, event.getGuild().getRoleById(343393950079385610L)).queue();
         event.getChannel().sendMessage("Made " + member.getEffectiveName() + " an adventurer.").queue();
 
     }
@@ -135,7 +135,7 @@ public class GeneralCommands {
         roles.add(event.getGuild().getRoleById(343394051938320388L));
         roles.add(event.getGuild().getRoleById(378954937297666052L));
         roles.add(event.getGuild().getRoleById(418756942941650955L));
-        event.getGuild().getController().addRolesToMember(member, roles).queue();
+        roles.forEach(role -> event.getGuild().addRoleToMember(member, role).queue());
         event.getChannel().sendMessage("Made " + member.getEffectiveName() + " a trial DM.").queue();
     }
     @Command("ctd")

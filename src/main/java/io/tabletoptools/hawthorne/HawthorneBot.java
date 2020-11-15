@@ -1,10 +1,10 @@
 package io.tabletoptools.hawthorne;
 
-import ch.hive.discord.bots.commands.CommandBase;
+import io.tabletoptools.hawthorne.commands.CommandBase;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
-import io.tabletoptools.discord.modulizer.Modulizer;
+import io.tabletoptools.hawthorne.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
 import io.tabletoptools.hawthorne.listener.*;
 import io.tabletoptools.hawthorne.model.RollSettings;
@@ -15,14 +15,13 @@ import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.resources.GeneralCommands;
 import io.tabletoptools.hawthorne.resources.GuideCommands;
 import io.tabletoptools.hawthorne.resources.LootCommands;
-import io.tabletoptools.hawthorne.resources.TradeCommands;
 import io.tabletoptools.hawthorne.services.HomebrewItemService;
 import io.tabletoptools.hawthorne.services.ItemService;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
@@ -107,7 +106,7 @@ public class HawthorneBot {
             scheduledExecutor.scheduleAtFixedRate(HawthorneBot::saveStatistics, 60, 60, TimeUnit.MINUTES);
 
             synchronized (shutdownNotifier) {
-                while(!shutdown) {
+                while (!shutdown) {
                     shutdownNotifier.wait();
                 }
             }
@@ -135,8 +134,7 @@ public class HawthorneBot {
                 .setColor(HAWTHORNE_PURPLE)
                 .registerCommandClass(GeneralCommands.class)
                 .registerCommandClass(GuideCommands.class)
-                .registerCommandClass(LootCommands.class)
-                .registerCommandClass(TradeCommands.class);
+                .registerCommandClass(LootCommands.class);
 
         Modulizer.instance().loadModule(new CoffeeModule());
         //Modulizer.instance().loadModule(new APIModule());
@@ -169,13 +167,11 @@ public class HawthorneBot {
             if (client == null) {
                 client = new JDABuilder(AccountType.BOT)
                         .setToken(this.token)
-                        .buildBlocking();
+                        .build();
             }
             return client;
         } catch (LoginException ex) {
             Loggers.APPLICATION_LOG.error("Error Logging in.", ex);
-        } catch (InterruptedException ex) {
-            Loggers.APPLICATION_LOG.error("Interrupted.", ex);
         }
         return null;
     }
@@ -247,17 +243,17 @@ public class HawthorneBot {
     }
 
     public static void saveStatistics(Statistics statistics) {
-        if(statusMessage == null) {
-            statusMessage = HawthorneBot.instance().getClient().getTextChannelById(456409530851655680L).getMessageById(456409584056139777L).complete();
+        if (statusMessage == null) {
+            statusMessage = HawthorneBot.instance().getClient().getTextChannelById(456409530851655680L).retrieveMessageById(456409584056139777L).complete();
         }
         Gson gson = new Gson();
 
-        Statistics oldStatistics = gson.fromJson(statusMessage.getContentRaw().substring(8).split("}")[0]+"}", Statistics.class);
-        statistics.setEventCount(oldStatistics.getEventCount()+statistics.getEventCount());
-        statistics.setMessageCount(oldStatistics.getMessageCount()+statistics.getMessageCount());
-        statistics.setPresenceUpdateCount(oldStatistics.getPresenceUpdateCount()+statistics.getPresenceUpdateCount());
-        statistics.setTypingStartCount(oldStatistics.getTypingStartCount()+statistics.getTypingStartCount());
-        statusMessage = statusMessage.editMessage("```json\n"+gson.toJson(statistics)+"\n```").complete();
+        Statistics oldStatistics = gson.fromJson(statusMessage.getContentRaw().substring(8).split("}")[0] + "}", Statistics.class);
+        statistics.setEventCount(oldStatistics.getEventCount() + statistics.getEventCount());
+        statistics.setMessageCount(oldStatistics.getMessageCount() + statistics.getMessageCount());
+        statistics.setPresenceUpdateCount(oldStatistics.getPresenceUpdateCount() + statistics.getPresenceUpdateCount());
+        statistics.setTypingStartCount(oldStatistics.getTypingStartCount() + statistics.getTypingStartCount());
+        statusMessage = statusMessage.editMessage("```json\n" + gson.toJson(statistics) + "\n```").complete();
     }
 
 }

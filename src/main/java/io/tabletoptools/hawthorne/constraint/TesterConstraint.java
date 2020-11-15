@@ -14,8 +14,8 @@
  */
 package io.tabletoptools.hawthorne.constraint;
 
-import ch.hive.discord.bots.commands.ConstraintCheck;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import io.tabletoptools.hawthorne.commands.ConstraintCheck;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class TesterConstraint extends ConstraintCheck {
 

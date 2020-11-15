@@ -1,9 +1,9 @@
 package io.tabletoptools.hawthorne.resources;
 
-import ch.hive.discord.bots.commands.Command;
-import ch.hive.discord.bots.commands.Constraint;
-import ch.hive.discord.bots.commands.Description;
-import ch.hive.discord.bots.commands.Parameter;
+import io.tabletoptools.hawthorne.commands.Command;
+import io.tabletoptools.hawthorne.commands.Constraint;
+import io.tabletoptools.hawthorne.commands.Description;
+import io.tabletoptools.hawthorne.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
 import io.tabletoptools.hawthorne.constraint.*;
 import io.tabletoptools.hawthorne.exception.NotAuthenticatedException;
@@ -11,11 +11,11 @@ import io.tabletoptools.hawthorne.model.RollSettings;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
 import io.tabletoptools.hawthorne.services.HomebrewItemService;
 import io.tabletoptools.hawthorne.services.ItemService;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -133,7 +133,7 @@ public class LootCommands {
             MessageEmbed embed = new EmbedBuilder()
                     .setTitle("Bot Status")
                     .setDescription("Current metrics of the bot in general")
-                    .addField("Ping", String.valueOf(HawthorneBot.instance().getClient().getPing()) + " ms", true)
+                    .addField("Ping", String.valueOf(HawthorneBot.instance().getClient().getGatewayPing()) + " ms", true)
                     .addField("Amount of Items", String.valueOf(ItemService.instance().getItems().size()), true)
                     .addField("Pending Loot Rolls", String.valueOf(HawthorneBot.instance().getRollMessages().size()), true)
                     .addField("Uptime", uptimeString, true)

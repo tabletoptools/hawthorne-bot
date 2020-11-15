@@ -14,13 +14,13 @@
  */
 package io.tabletoptools.hawthorne.resources;
 
-import ch.hive.discord.bots.commands.Command;
-import ch.hive.discord.bots.commands.Description;
-import ch.hive.discord.bots.commands.Parameter;
+import io.tabletoptools.hawthorne.commands.Command;
+import io.tabletoptools.hawthorne.commands.Description;
+import io.tabletoptools.hawthorne.commands.Parameter;
 import io.tabletoptools.hawthorne.HawthorneBot;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class GuideCommands {
 

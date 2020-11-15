@@ -14,19 +14,19 @@
  */
 package io.tabletoptools.hawthorne.listener;
 
-import ch.hive.discord.bots.commands.CommandBase;
+import io.tabletoptools.hawthorne.commands.CommandBase;
 import io.tabletoptools.hawthorne.modules.logging.Loggers;
-import io.tabletoptools.discord.modulizer.Modulizer;
+import io.tabletoptools.hawthorne.modulizer.Modulizer;
 import io.tabletoptools.hawthorne.model.ListMessageInstance;
 import io.tabletoptools.hawthorne.model.LookupItem;
 import io.tabletoptools.hawthorne.services.HomebrewItemService;
 import io.tabletoptools.hawthorne.util.SearchUtils;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.MessageBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
 
